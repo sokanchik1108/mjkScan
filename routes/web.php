@@ -27,6 +27,10 @@ Route::get('/scan', [MainController::class, 'scanQr'])->name('scanQr');  // Ст
 Route::get('/product/{id}', [MainController::class, 'viewProduct'])->name('viewProduct');  // Страница для товара по ID
 
 
+Route::get('/product/{id}', [MainController::class, 'show'])->name('product.show');
+
+
+
 
 
 

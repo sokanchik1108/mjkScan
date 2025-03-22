@@ -40,7 +40,7 @@
         .form-group input[type="text"],
         .form-group input[type="number"],
         .form-group input[type="file"] {
-            width: 100%;
+            width: 95%;
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;

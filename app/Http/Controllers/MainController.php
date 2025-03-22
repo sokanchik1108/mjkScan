@@ -226,4 +226,12 @@ public function scanQr()
         return redirect()->route('scanQr')->with('error', 'Товар не найден');
     }
 
+    public function show($id, Request $request)
+    {
+        $item = Item::find($id);
+
+        return view('product', compact('item'));
+    }
 }
+
+
