@@ -9,23 +9,45 @@ use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Storage;
 
 class MainController extends Controller
-
 {
-    public function getItem(Request $request)
+    // Метод для отображения страницы с товарами
+    public function welcome()
     {
-        // Получаем все товары из базы данных и передаем в представление
-        $items = Item::all();
-        return view('getItem', ['items' => $items]);
+        return view('welcome');
     }
 
-    public function product()
+    // Метод для обработки формы и сохранения данных
+    public function form_check(Request $request)
     {
-        // Получаем все товары из базы данных и передаем в представление
-        $items = Item::all();
-        return view('product', ['items' => $items]);
+        // Создание нового объекта Item
+        $item = new Item();
+        $item->product_name = $request->input('product-name');
+        $item->quantity = $request->input('quantity');
+        $item->purchase_price = $request->input('purchase-price');
+        $item->sale_price = $request->input('sale-price');
+
+        // Сохраняем файл и получаем путь
+        $imagePath = $this->saveFile($request);
+
+        // Сохраняем путь к изображению
+        if ($imagePath) {
+            $item->img_path = $imagePath;
+        }
+
+        // Сохраняем товар в базе данных
+        $item->save();
+
+        // Генерация и сохранение QR-кода с ссылкой на /product/{id}
+        $qrcodePath = $this->generateQrCode($item->id);
+
+        // Сохраняем путь к QR-коду в базе данных
+        $item->qrcode_path = $qrcodePath;
+
+        // Сохраняем товар с обновленным путем к QR-коду
+        $item->save();
+
+        return redirect()->route('welcome');
     }
-
-
 
     // Метод для сохранения изображения товара
     public function saveFile(Request $request)
@@ -33,29 +55,31 @@ class MainController extends Controller
         // Проверка на наличие файла и его валидность
         if ($request->hasFile('product-image') && $request->file('product-image')->isValid()) {
             $file = $request->file('product-image');
-            
+
             // Генерация уникального имени файла
             $uniqueFileName = time() . '_' . $file->getClientOriginalName();
-            
+
             // Сохраняем файл с уникальным именем в папку "files" в public storage
             $path = $file->storeAs('files', $uniqueFileName, 'public');
-            
+
             return $path;
         }
-    
+
         return null;  // Если файл не был передан или не валиден
     }
 
-    // Метод для генерации и сохранения QR-кода
-    public function generateQrCode($data)
+    // Метод для генерации и сохранения QR-кода с ссылкой на /product/{id}
+    public function generateQrCode($id)
     {
-        // Создаем QR-код с использованием библиотеки endroid/qr-code
-        $qrCode = new QrCode($data);
+        // Создаем URL-ссылку на страницу товара
+        $url = url('/product/' . $id); // Формируем ссылку вида /product/{id}
+        
+        // Создаем QR-код для этой ссылки
+        $qrCode = new QrCode($url);
         $writer = new PngWriter();
 
-        // Путь для сохранения QR-кода в директорию storage/app/qrcodes
+        // Путь для сохранения QR-кода в директорию public/qrcodes
         $directory = public_path('qrcodes/');
-
 
         // Проверяем, существует ли директория, если нет, то создаем её
         if (!is_dir($directory)) {
@@ -73,46 +97,18 @@ class MainController extends Controller
         return 'qrcodes/' . $fileName;
     }
 
-    // Метод для обработки формы и сохранения данных
-    public function form_check(Request $request)
+    // Метод для получения всех товаров
+    public function getItem(Request $request)
     {
-        
-        // Создание нового объекта Item
-        $item = new Item();
-        $item->product_name = $request->input('product-name');
-        $item->quantity = $request->input('quantity');
-        $item->purchase_price = $request->input('purchase-price');
-        $item->sale_price = $request->input('sale-price');
-
-        // Сохраняем файл и получаем путь
-        $imagePath = $this->saveFile($request);
-
-
-        
-
-        // Сохраняем путь к изображению и QR-коду в базе данных
-        if ($imagePath) {
-            $item->img_path = $imagePath;
-        }
-
-
-        $item->save();
-
-        // Генерация и сохранение QR-кода
-
-        $qrcodePath = $this->generateQrCode($item->id);
-
-        $item->qrcode_path = $qrcodePath;
-
-        // Сохраняем товар в базе данных
-        $item->save();
-
-        return redirect()->route('welcome');
+        $items = Item::all();
+        return view('getItem', ['items' => $items]);
     }
 
-    // Метод для отображения страницы с товарами
-    public function welcome() {
-        return view('welcome');
+    // Метод для отображения всех товаров на странице продукта
+    public function product()
+    {
+        $items = Item::all();
+        return view('product', ['items' => $items]);
     }
 
     // Метод для удаления товара по ID
@@ -136,79 +132,80 @@ class MainController extends Controller
 
         return redirect()->route('getItem')->with('error', 'Товар не найден!');
     }
-    
 
+    // Метод для обновления товара
     public function updateItem(Request $request, $id)
-{
-    // Находим товар по ID
-    $item = Item::find($id);
+    {
+        // Находим товар по ID
+        $item = Item::find($id);
 
-    if (!$item) {
-        return redirect()->route('getItem')->with('error', 'Товар не найден');
-    }
-
-    // Валидация данных
-    $validatedData = $request->validate([
-        'product-name' => 'required|string|max:255',
-        'quantity' => 'required|integer',
-        'purchase-price' => 'required|numeric',
-        'sale-price' => 'required|numeric',
-    ]);
-
-    // Флаг для отслеживания изменений
-    $isUpdated = false;
-
-    // Проверяем и обновляем данные товара только в случае изменений
-    if ($item->product_name !== $validatedData['product-name']) {
-        $item->product_name = $validatedData['product-name'];
-        $isUpdated = true;
-    }
-
-    if ($item->quantity !== $validatedData['quantity']) {
-        $item->quantity = $validatedData['quantity'];
-        $isUpdated = true;
-    }
-
-    if ($item->purchase_price !== $validatedData['purchase-price']) {
-        $item->purchase_price = $validatedData['purchase-price'];
-        $isUpdated = true;
-    }
-
-    if ($item->sale_price !== $validatedData['sale-price']) {
-        $item->sale_price = $validatedData['sale-price'];
-        $isUpdated = true;
-    }
-
-    // Обработка изменения изображения (если оно изменилось)
-    if ($request->hasFile('product-image')) {
-        // Удаляем старое изображение, если оно существует
-        if ($item->img_path && file_exists(storage_path('app/public/' . $item->img_path))) {
-            unlink(storage_path('app/public/' . $item->img_path));
+        if (!$item) {
+            return redirect()->route('getItem')->with('error', 'Товар не найден');
         }
 
-        // Сохраняем новое изображение
-        $imagePath = $this->saveFile($request);
-        if ($imagePath && $item->img_path !== $imagePath) {
-            $item->img_path = $imagePath;
+        // Валидация данных
+        $validatedData = $request->validate([
+            'product-name' => 'required|string|max:255',
+            'quantity' => 'required|integer',
+            'purchase-price' => 'required|numeric',
+            'sale-price' => 'required|numeric',
+        ]);
+
+        // Флаг для отслеживания изменений
+        $isUpdated = false;
+
+        // Проверяем и обновляем данные товара только в случае изменений
+        if ($item->product_name !== $validatedData['product-name']) {
+            $item->product_name = $validatedData['product-name'];
             $isUpdated = true;
         }
+
+        if ($item->quantity !== $validatedData['quantity']) {
+            $item->quantity = $validatedData['quantity'];
+            $isUpdated = true;
+        }
+
+        if ($item->purchase_price !== $validatedData['purchase-price']) {
+            $item->purchase_price = $validatedData['purchase-price'];
+            $isUpdated = true;
+        }
+
+        if ($item->sale_price !== $validatedData['sale-price']) {
+            $item->sale_price = $validatedData['sale-price'];
+            $isUpdated = true;
+        }
+
+        // Обработка изменения изображения (если оно изменилось)
+        if ($request->hasFile('product-image')) {
+            // Удаляем старое изображение, если оно существует
+            if ($item->img_path && file_exists(storage_path('app/public/' . $item->img_path))) {
+                unlink(storage_path('app/public/' . $item->img_path));
+            }
+
+            // Сохраняем новое изображение
+            $imagePath = $this->saveFile($request);
+            if ($imagePath && $item->img_path !== $imagePath) {
+                $item->img_path = $imagePath;
+                $isUpdated = true;
+            }
+        }
+
+        // Если изменений не было, возвращаем сообщение о том, что товар не изменился
+        if (!$isUpdated) {
+            return redirect()->route('getItem')->with('info', 'Товар не изменился.');
+        }
+
+        // Сохраняем изменения, если что-то было обновлено
+        $item->save();
+
+        // Перенаправляем на страницу с товарами и показываем сообщение об успешном обновлении
+        return redirect()->route('getItem')->with('success', 'Товар успешно обновлен!');
     }
 
-    // Если изменений не было, возвращаем сообщение о том, что товар не изменился
-    if (!$isUpdated) {
-        return redirect()->route('getItem')->with('info', 'Товар не изменился.');
-    }
-
-    // Сохраняем изменения, если что-то было обновлено
-    $item->save();
-
-    // Перенаправляем на страницу с товарами и показываем сообщение об успешном обновлении
-    return redirect()->route('getItem')->with('success', 'Товар успешно обновлен!');
-}
-
-public function scanQr()
+    // Метод для сканирования QR-кода
+    public function scanQr()
     {
-        return view('scanQR');  // Возвращаем Blade-шаблон для сканирования
+        return view('scanQR'); // Возвращаем Blade-шаблон для сканирования
     }
 
     // Метод для просмотра товара по ID
@@ -226,12 +223,10 @@ public function scanQr()
         return redirect()->route('scanQr')->with('error', 'Товар не найден');
     }
 
+    // Метод для отображения товара по ID (для шаблона Blade)
     public function show($id, Request $request)
     {
         $item = Item::find($id);
-
         return view('product', compact('item'));
     }
 }
-
-
