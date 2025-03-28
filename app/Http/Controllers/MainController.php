@@ -16,38 +16,43 @@ class MainController extends Controller
         return view('welcome');
     }
 
-    // Метод для обработки формы и сохранения данных
-    public function form_check(Request $request)
-    {
-        // Создание нового объекта Item
-        $item = new Item();
-        $item->product_name = $request->input('product-name');
-        $item->quantity = $request->input('quantity');
-        $item->purchase_price = $request->input('purchase-price');
-        $item->sale_price = $request->input('sale-price');
 
-        // Сохраняем файл и получаем путь
-        $imagePath = $this->saveFile($request);
-
-        // Сохраняем путь к изображению
-        if ($imagePath) {
-            $item->img_path = $imagePath;
-        }
-
-        // Сохраняем товар в базе данных
-        $item->save();
-
-        // Генерация и сохранение QR-кода с ссылкой на /product/{id}
-        $qrcodePath = $this->generateQrCode($item->id);
-
-        // Сохраняем путь к QR-коду в базе данных
-        $item->qrcode_path = $qrcodePath;
-
-        // Сохраняем товар с обновленным путем к QR-коду
-        $item->save();
-
-        return redirect()->route('welcome');
-    }
+        // Метод для обработки формы и сохранения данных
+        public function form_check(Request $request)
+        {
+            
+            // Создание нового объекта Item
+            $item = new Item();
+            $item->product_name = $request->input('product-name');
+            $item->quantity = $request->input('quantity');
+            $item->purchase_price = $request->input('purchase-price');
+            $item->sale_price = $request->input('sale-price');
+    
+            // Сохраняем файл и получаем путь
+            $imagePath = $this->saveFile($request);
+    
+    
+            
+    
+            // Сохраняем путь к изображению и QR-коду в базе данных
+            if ($imagePath) {
+                $item->img_path = $imagePath;
+            }
+    
+    
+            $item->save();
+    
+            // Генерация и сохранение QR-кода
+    
+            $qrcodePath = $this->generateQrCode($item->id);
+    
+            $item->qrcode_path = $qrcodePath;
+    
+            // Сохраняем товар в базе данных
+            $item->save();
+    
+            return redirect()->route('welcome');
+        }  
 
     // Метод для сохранения изображения товара
     public function saveFile(Request $request)
@@ -68,34 +73,34 @@ class MainController extends Controller
         return null;  // Если файл не был передан или не валиден
     }
 
-    // Метод для генерации и сохранения QR-кода с ссылкой на /product/{id}
-    public function generateQrCode($id)
-    {
-        // Создаем URL-ссылку на страницу товара
-        $url = url('/product/' . $id); // Формируем ссылку вида /product/{id}
-        
-        // Создаем QR-код для этой ссылки
-        $qrCode = new QrCode($url);
-        $writer = new PngWriter();
-
-        // Путь для сохранения QR-кода в директорию public/qrcodes
-        $directory = public_path('qrcodes/');
-
-        // Проверяем, существует ли директория, если нет, то создаем её
-        if (!is_dir($directory)) {
-            mkdir($directory, 0777, true); // Создаём директорию с правами 0777
+        // Метод для генерации и сохранения QR-кода
+        public function generateQrCode($data)
+        {
+            // Создаем QR-код с использованием библиотеки endroid/qr-code
+            $qrCode = new QrCode($data);
+            $writer = new PngWriter();
+    
+            // Путь для сохранения QR-кода в директорию storage/app/qrcodes
+            $directory = public_path('qrcodes/');
+    
+    
+            // Проверяем, существует ли директория, если нет, то создаем её
+            if (!is_dir($directory)) {
+                mkdir($directory, 0777, true); // Создаём директорию с правами 0777
+            }
+    
+            // Генерация имени файла QR-кода
+            $fileName = 'qrcode_' . time() . '.png';
+            $path = $directory . $fileName;
+    
+            // Запись изображения QR-кода в файл
+            $writer->write($qrCode)->saveToFile($path);
+    
+            // Возвращаем относительный путь для сохранения в базе данных
+            return 'qrcodes/' . $fileName;
         }
+    
 
-        // Генерация имени файла QR-кода
-        $fileName = 'qrcode_' . time() . '.png';
-        $path = $directory . $fileName;
-
-        // Запись изображения QR-кода в файл
-        $writer->write($qrCode)->saveToFile($path);
-
-        // Возвращаем относительный путь для сохранения в базе данных
-        return 'qrcodes/' . $fileName;
-    }
 
     // Метод для получения всех товаров
     public function getItem(Request $request)
