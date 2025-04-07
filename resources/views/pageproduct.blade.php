@@ -303,19 +303,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 
-    <div class="email">
-        <div class="field">
-            <div>
-                <h3>Оставаться в курсе</h3>
-                <p>Подпишитесь, чтобы получать последние новости и обновления о нас. Обещаем не спамить вам!</p>
-            </div>
-            <div>
-                <input type="email" id="emailField" placeholder="Enter email address">
-                <button onclick="checkEmail()">Продолжить</button>
-            </div>
-        </div>
-    </div>
-
     <footer>
         <div class="blocks ">
             <div>

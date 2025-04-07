@@ -35,7 +35,7 @@ Route::get('/product/{id}', [MainController::class, 'show'])->name('product.show
 
 Route::post('/review/check', [WebsiteController::class, 'review_check']);
 
-Route::get('/productpage/{id}',[WebsiteController::class, 'productpage'])->name ('productpage'); 
+Route::get('/productpage',[WebsiteController::class, 'productpage'])->name ('productpage'); 
 
 
 
