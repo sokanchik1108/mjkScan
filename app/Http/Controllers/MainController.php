@@ -27,6 +27,14 @@ class MainController extends Controller
             $item->quantity = $request->input('quantity');
             $item->purchase_price = $request->input('purchase-price');
             $item->sale_price = $request->input('sale-price');
+            $item->article= $request->input('article');
+            $item->basetype = $request->input('basetype');
+            $item->power = $request->input('power');
+            $item->characteristics= $request->input('characteristics');
+            $item->madein = $request->input('madein');
+            $item->brand = $request->input('brand');
+            $item->description = $request->input('description');
+            $item->detailed = $request->input('detailed');
     
             // Сохраняем файл и получаем путь
             $imagePath = $this->saveFile($request);

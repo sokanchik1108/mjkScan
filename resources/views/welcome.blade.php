@@ -100,6 +100,13 @@
 
         <form id="product-form" action="/formcheck" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
             @csrf
+
+            <!-- Загрузка изображения товара -->
+            <div class="form-group">
+                <label for="product-image">Загрузить изображение</label>
+                <input type="file" id="product_image" name="product-image" accept="image/*" onchange="previewImage(event)" required>
+            </div>
+
             <!-- Название товара -->
             <div class="form-group">
                 <label for="product-name">Название товара</label>
@@ -124,21 +131,53 @@
                 <input type="text" id="sale-price" name="sale-price" required>
             </div>
 
-            <!-- Загрузка изображения товара -->
             <div class="form-group">
-                <label for="product-image">Загрузить изображение</label>
-                <input type="file" id="product_image" name="product-image" accept="image/*" onchange="previewImage(event)" required>
+                <label for="characteristics">Харакатеристики</label>
+                <input type="text" id="characteristics" name="characteristics">
+            </div>
+
+            <div class="form-group">
+                <label for="brand">Бренд</label>
+                <input type="text" id="brand" name="brand">
+            </div>
+            <div class="form-group">
+                <label for="basetype">Тип цоколя</label>
+                <input type="text" id="basetype" name="basetype">
+            </div>
+
+            <div class="form-group">
+                <label for="article">Артикул</label>
+                <input type="text" id="article" name="article">
+            </div>
+
+            <div class="form-group">
+                <label for="power">Мощность, Вт</label>
+                <input type="text" id="power" name="power">
+            </div>
+
+            <div class="form-group">
+                <label for="madein">Страна производитель</label>
+                <input type="text" id="madein" name="madein">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <input type="text" id="description" name="description">
+            </div>
+
+            <div class="form-group">
+                <label for="detailed">Развернутое описание</label>
+                <textarea id="detailed" name="detailed" rows="4" style="width: 95%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;height:200px"></textarea>
             </div>
 
             <!-- Кнопка сохранения -->
             <div class="form-group">
-                <button type="submit" >Сохранить</button>
+                <button type="submit">Сохранить</button>
             </div>
         </form>
     </div>
 
     <script>
-
         function previewImage(event) {
             var reader = new FileReader();
             reader.onload = function() {

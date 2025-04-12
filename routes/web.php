@@ -33,9 +33,21 @@ Route::get('/product/{id}', [MainController::class, 'viewProduct'])->name('viewP
 
 Route::get('/product/{id}', [MainController::class, 'show'])->name('product.show');
 
-Route::post('/review/check', [WebsiteController::class, 'review_check']);
 
-Route::get('/productpage',[WebsiteController::class, 'productpage'])->name ('productpage'); 
+Route::get("/website",[WebsiteController::class,'website'])->name('website');
+
+Route::delete('/item/{id}', [WebsiteController::class, 'destroy'])->name('item.delete');
+
+
+Route::post('/productpage/{id}/review', [WebsiteController::class, 'review_check'])->name('review_check');
+
+Route::get('/productpage/{id}', [WebsiteController::class, 'showProductpage'])->name('productpage.show');
+
+
+
+
+
+
 
 
 

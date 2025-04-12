@@ -64,12 +64,12 @@
 
                 <div class="form-group">
                     <label for="purchase-price-{{ $item->id }}">Цена прихода</label>
-                    <input type="number" class="form-control" id="purchase-price-{{ $item->id }}" name="purchase-price" value="{{ $item->purchase_price }}" required>
+                    <input type="text" class="form-control" id="purchase-price-{{ $item->id }}" name="purchase-price" value="{{ $item->purchase_price }}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="sale-price-{{ $item->id }}">Цена продажи</label>
-                    <input type="number" class="form-control" id="sale-price-{{ $item->id }}" name="sale-price" value="{{ $item->sale_price }}" required>
+                    <input type="text" class="form-control" id="sale-price-{{ $item->id }}" name="sale-price" value="{{ $item->sale_price }}" required>
                 </div>
 
 

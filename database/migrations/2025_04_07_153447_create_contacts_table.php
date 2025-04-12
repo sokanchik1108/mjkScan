@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('pluses');
             $table->string('minuses');
             $table->text('message');
-            $table->timestamps();
+            $table->timestamps(); // Время создания и обновления
         });
 
         
@@ -28,5 +28,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('contacts');
+
     }
 };
