@@ -11,4 +11,13 @@ class Contact extends Model
 
 
     public $timestamps = false;
+
+
+    public function item()
+{
+    return $this->belongsTo(Item::class);
+}
+
+protected $fillable = ['item_id', 'pluses', 'minuses', 'message'];
+
 }

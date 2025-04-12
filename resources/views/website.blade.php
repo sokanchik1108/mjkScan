@@ -9,264 +9,234 @@
 </head>
 
 <style>
-    .title {
-      margin-left: 10px;
-    }
-
-    .container {
-      display: flex;
-      gap: 20px;
-      /* расстояние между карточками */
-      justify-content: center;
-      /* выравнивание карточек по центру */
-      flex-wrap: wrap;
-      /* чтобы карточки переходили на новую строку, если не вмещаются */
-    }
-
-
-    .row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.card {
-  width: 100%;
-  height: 650px; /* Увеличиваем высоту карточки */
-  max-width: 350px; /* Увеличиваем максимальную ширину карточки */
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
-}
-
-.card a {
-  text-decoration: none;
-  color:black;  
-}
-
-
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card-img-top {
-  width: 100%;
-  height: 300px; /* Увеличиваем высоту изображения */
-  object-fit: cover;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.card-body {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.card-title:hover{
-  color: #555;
-  text-decoration: underline;
-}
-
-.card-text {
-  font-size: 1em;
-  color: #555;
-  margin-bottom: 10px;
-  margin-top: 10px;
-  flex-grow: 1;
-}
-
-.card-text span {
-  color: #007bff;
-}
-
-.card-price {
-  font-size: 1.3em; /* Увеличиваем размер шрифта для цены */
-  font-weight: bold;
-  color: black;
-  margin: 10px 0;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  border-color: #007bff;
-  font-size: 1em;
-  padding: 10px 16px;
-  width: 100%;
-  color: white !important;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
-}
-
-@media (max-width: 768px) {
-  .col-md-2 {
-    width: 80%;
+  .title {
+    margin-left: 10px;
   }
-}
 
-@media (min-width: 769px) {
-  .col-md-2 {
-    width: 20%;
+  .container {
+    display: flex;
+    gap: 20px;
+    /* расстояние между карточками */
+    justify-content: center;
+    /* выравнивание карточек по центру */
+    flex-wrap: wrap;
+    /* чтобы карточки переходили на новую строку, если не вмещаются */
   }
-}
 
-@media (min-width: 1024px) {
-  .col-md-2 {
-    width: 16%;
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
   }
-}
+
+  .card {
+    width: 100%;
+    height: 650px;
+    /* Увеличиваем высоту карточки */
+    max-width: 350px;
+    /* Увеличиваем максимальную ширину карточки */
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .card a {
+    text-decoration: none;
+    color: black;
+  }
 
 
 
+  .card:hover {
+    transform: translateY(-5px);
+  }
 
-    .btn-more {
-      margin-left: 30px;
-      margin-top: 10px;
-      margin-right: 30px;
-      height: 46px;
-      line-height: 46px;
-      text-transform: uppercase;
-      font-size: 14px;
-      margin-top: 50px;
-      text-align: center;
-      font-weight: 700;
-      cursor: pointer;
+  .card-img-top {
+    width: 100%;
+    height: 300px;
+    /* Увеличиваем высоту изображения */
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .card-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+
+  .card-title:hover {
+    color: #555;
+    text-decoration: underline;
+  }
+
+  .card-text {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    flex-grow: 1;
+  }
+
+  .card-text span {
+    color: #007bff;
+  }
+
+  .card-price {
+    font-size: 1.3em;
+    /* Увеличиваем размер шрифта для цены */
+    font-weight: bold;
+    color: black;
+    margin: 10px 0;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    font-size: 1em;
+    padding: 10px 16px;
+    width: 100%;
+    color: white !important;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
+
+  @media (max-width: 768px) {
+    .col-md-2 {
+      width: 80%;
     }
+  }
 
-    .btn-more a:hover {
-      background: #D3D3D3;
+  @media (min-width: 769px) {
+    .col-md-2 {
+      width: 20%;
     }
+  }
 
-    .btn-more a {
-      text-decoration: none;
-      display: block;
-      width: 100%;
-      height: 100%;
-      background: #f9fafc;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 14px;
+  @media (min-width: 1024px) {
+    .col-md-2 {
+      width: 16%;
     }
+  }
 
 
-    .pagination {
-      margin-top: 20px;
-      justify-content: center;
-      margin-bottom: 200px;
-    }
-
-    .pagination a {
-      display: block;
-      height: 30px;
-      line-height: 30px;
-      border-radius: 5px;
-      background: #fff;
-      padding: 0 12px;
-      transition: .3s;
-      color: #b1b9c2;
-      font-weight: 700;
-      position: relative;
-    }
-
-    .pagination p {
-      display: block;
-      height: 30px;
-      line-height: 30px;
-      border-radius: 5px;
-      background: #fff;
-      padding: 0 12px;
-      transition: .3s;
-      color: #b1b9c2;
-      font-weight: 700;
-      position: relative
-    }
-
-    .pagination a:hover {
-      background: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      color: black
-    }
-
-    footer {
-      background: black;
-      padding: 50px 50px;
-      margin-top: 100px;
 
 
-    }
+  .btn-more {
+    margin-left: 30px;
+    margin-top: 10px;
+    margin-right: 30px;
+    height: 46px;
+    line-height: 46px;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-top: 50px;
+    text-align: center;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-more a:hover {
+    background: #D3D3D3;
+  }
+
+  .btn-more a {
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #f9fafc;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  footer {
+    background: black;
+    padding: 50px 50px;
+    margin-top: 100px;
 
 
-    footer .blocks {
-      display: flex;
-      justify-content: space-between;
-    }
+  }
 
-    footer .blocks .logo {
-      color: white;
-      font-size: 29px;
-      font-weight: 800;
-    }
 
-    footer .blocks p {
-      color: white;
-      opacity: 0.8;
-    }
+  footer .blocks {
+    display: flex;
+    justify-content: space-between;
+  }
 
-    footer .blocks h4 {
-      font-size: 17;
-      font-weight: 600;
-      color: white;
-    }
+  footer .blocks .logo {
+    color: white;
+    font-size: 29px;
+    font-weight: 800;
+  }
 
-    footer .blocks ul {
-      list-style: none;
-    }
+  footer .blocks p {
+    color: white;
+    opacity: 0.8;
+  }
 
-    footer .blocks ul li {
-      color: white;
-      opacity: 0.8;
-      margin-top: 7px;
-    }
+  footer .blocks h4 {
+    font-size: 17;
+    font-weight: 600;
+    color: white;
+  }
 
-    footer hr {
-      margin: 30px 0;
-      height: 2.0;
-      color: #ccc;
-    }
+  footer .blocks ul {
+    list-style: none;
+  }
 
-    footer p {
-      text-align: center;
-      color: #ccc;
-    }
-  </style>
+  footer .blocks ul li {
+    color: white;
+    opacity: 0.8;
+    margin-top: 7px;
+  }
+
+  footer hr {
+    margin: 30px 0;
+    height: 2.0;
+    color: #ccc;
+  }
+
+  footer p {
+    text-align: center;
+    color: #ccc;
+  }
+</style>
 
 <body>
   <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
+      <h4 class="offcanvas-title" id="offcanvasScrollingLabel">Каталог</h4>
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <p>Try scrolling the rest of the page to see this option in action.</p>
+      <ul>
+        <li>
+          <a href="/website/lambs">Лампы</a>
+        </li>
+        <li>Люстры</li>
+        <li>Лампы</li>
+
+      </ul>
     </div>
   </div>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -312,108 +282,71 @@
   </nav>
 
   <div class="container">
-  <div class="title">
-    <h1>Люстры</h1>
-  </div>
-  </div>
-
-  <div class="row">
-  @foreach($items as $item)
-  <!-- Пример карточки товара -->
-  <div class="col-md-2 col-sm-4 mb-4">
-    <!-- Оборачиваем всю карточку в ссылку -->
-      <div class="card">
-      <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
-        <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="Товар">
-        </a>
-        <div class="card-body">
-        <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
-          <h5 class="card-title">{{ $item->product_name }}</h5>
-          </a>
-
-          <p class="card-text">Артикул: <span>{{ $item->article }}</span></p>
-
-          <p class="card-price">{{ $item->sale_price }}</p>
-          <div class="add">
-          <a href="#" class="btn btn-primary">В корзину</a>
-          </div>
-          <form action="{{ route('item.delete', $item->id) }}" method="POST">
-            @csrf
-            @method('DELETE')  <!-- Используем метод DELETE для удаления -->
-            <button type="submit" class="btn btn-danger" style="margin-top: 10px;">Удалить</button>
-          </form>
-        </div>
-      </div>
-  </div>
-  @endforeach
-</div>
-
-
-
-
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <div class="btn-more">
-    <a class="js-showmore" href="#" data-num="1">ПОКАЗАТЬ ЕЩЁ</a>
-    <div class="pagination">
-      <span class="navigation-title display-none"></span>
-
-
-
-      <!-- prev -->
-      <div class="pagination__text is-start"><a href="/catalog/section/lyustry/">В начало</a></div>
-      <div class="pagination__text is-prev"><a href="#p2" id="navigation_1_previous_page">Назад</a></div>
-      <div class="pagination__num"><a href="#p1">1</a></div>
-      <div class="pagination__num"><a href="#p2">2</a></div>
-      <div class="pagination__num"><a href="#p3">3</a></div>
-      <div class="pagination__num"><a href="#p4">4</a></div>
-      <div class="pagination__num"><a href="#p5">5</a></div>
-      <div class="pagination__num">
-        <p>...</p>
-      </div>
-      <div class="pagination__num"><a href="#p550">550</a></div>
-      <div class="pagination__num"><a href="#p551">551</a></div>
-      <!-- next -->
-      <div class="pagination__text is-next"><a href="#p4" id="navigation_1_next_page">Вперед</a></div>
-      <div class="pagination__text is-end"><a href="#p551">В конец</a></div>
-
+    <div class="title">
+      <h1>Люстры</h1>
     </div>
   </div>
 
+  <div id="products-container">
+    @include('partials.pagination')
+  </div>
 
+  <div id="loader" style="display: none; text-align: center; margin: 20px;">
+    Загрузка...
+  </div>
 
   <footer>
-    <div class="blocks ">
-      <div>
-        <span class="logo">MJK</span>
-        <p>Алмата, зеленый базар, контеинер №10</p>
-      </div>
-      <div>
-        <h4>Помощь</h4>
-        <ul>
-          <li>Доставка</li>
-          <li>Оплата</li>
-          <li>Возврат</li>
-          <li>Гарантия</li>
-        </ul>
-      </div>
-      <div>
-        <h4>Связаться с нами</h4>
-        <p>+7 747 289 41 61</p>
+    <div class="container">
+      <div class="blocks ">
+        <div>
+          <p class="logo">MJK</p>
+          <p>Алмата, зеленый базар, контеинер №10. <br>
+            +7 747 289 41 61</p>
+        </div>
       </div>
     </div>
-    <hr>
-    <p>© 2024 Company, Inc. All rights reserved.</p>
   </footer>
 
   <script>
-    function checkEmail() {
-      let email = document.querySelector('#emailField').value;
-      if (!email.includes('@')) alert('Нет символа @');
-      else if (!email.includes('.')) alert('Нет символа .')
-      else alert('Все отлично!')
+    let isLoading = false;
+
+    function loadPage(url) {
+      if (isLoading) return; // блокируем повторные клики
+      isLoading = true;
+
+      document.getElementById('loader').style.display = 'block';
+
+      fetch(url, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+
+          const newProducts = doc.querySelector('#products-container');
+          const newPagination = doc.querySelector('#pagination-wrapper');
+
+          if (newProducts && newPagination) {
+            document.getElementById('products-container').innerHTML = newProducts.innerHTML;
+            document.getElementById('pagination-wrapper').innerHTML = newPagination.innerHTML;
+            attachAjaxHandlers(); // привязать заново клики
+          }
+
+          document.getElementById('loader').style.display = 'none';
+          isLoading = false;
+        })
+        .catch(error => {
+          console.error('Ошибка при загрузке:', error);
+          isLoading = false;
+          document.getElementById('loader').style.display = 'none';
+        });
     }
   </script>
+
+
 
 </body>
 

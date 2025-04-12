@@ -24,11 +24,12 @@ class WebsiteController extends Controller
     $review->minuses = $request->input('minuses') ?? 'Не указаны';
     $review->message = $request->input('message');
 
-   //$review->item_id = $id;!!
+    $review->item_id = $id;
 
     // Сохраняем объект в базу данных
     $review->save();
-
+    
+    
     // Перенаправляем пользователя обратно на страницу товара
     return redirect()->route('productpage.show', ['id' => $id])->with('success', 'Отзыв отправлен!');
 }
@@ -37,10 +38,7 @@ class WebsiteController extends Controller
 
 
 
-    public function website() {
-        $items = Item::all();
-        return view('/website', ['items' => $items]);
-    }
+
 
 
     public function destroy($id)
@@ -71,11 +69,25 @@ class WebsiteController extends Controller
         }
 
         // Получаем все отзывы, связанные с товаром
-        $reviews = Contact::all();
+        $item = Item::with('contacts')->findOrFail($id);
 
         // Передаем товар и отзывы в представление
-        return view('productpage', compact('item', 'reviews'));
+        return view('productpage', compact('item'));
     }
+
+
+    public function website(Request $request)
+    {
+        $items = Item::paginate(10);
+    
+        if ($request->ajax()) {
+            return view('partials.pagination', compact('items'))->render(); // один и тот же шаблон
+        }
+    
+        return view('website', compact('items'));
+    }
+
+
 }
 
 

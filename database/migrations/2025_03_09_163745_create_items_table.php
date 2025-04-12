@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('qrcode_path')->nullable();
             $table->string('article')->nullable();  // Если столбец может быть пустым
             $table->string('brand')->nullable();  // Если столбец может быть пустым
-            $table->text('characteristics')->nullable();  // Если столбец может быть пустым
             $table->string('power')->nullable();  // Если столбец может быть пустым
             $table->string('madein')->nullable();  // Если столбец может быть пустым
             $table->string('basetype')->nullable();  // Если столбец может быть пустым

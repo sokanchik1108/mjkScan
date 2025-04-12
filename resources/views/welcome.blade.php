@@ -132,11 +132,6 @@
             </div>
 
             <div class="form-group">
-                <label for="characteristics">Харакатеристики</label>
-                <input type="text" id="characteristics" name="characteristics">
-            </div>
-
-            <div class="form-group">
                 <label for="brand">Бренд</label>
                 <input type="text" id="brand" name="brand">
             </div>

@@ -62,15 +62,13 @@
             <div class="row">
                 <div class="col">
                     <div>
-                        <img src="{{ asset('storage/images/product1.webp') }}" alt="">
+                        <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
                     </div>
                 </div>
 
                 <div class="col">
                     <div>
-                        <h4>Св-к Gauss LED линейный WLF-7</h4>
-                        <h4>36W 3080lm 6500K IP40</h4>
-                        <h4>1200*76*24mm 892625336</h4>
+                        <h4>{{ $item->product_name }}</h4>
                     </div>
 
                     <div class="price">
@@ -117,7 +115,7 @@
                             </li>
                             <li class="product-character-wrapper__indication--tables">
                                 <span class="product-character-wrapper__indication--property бренд">Бренд</span>
-                                <a class="product-character-wrapper__indication--name" href="#">{{ $item->brand }}</a>
+                                <span class="product-character-wrapper__indication--name">{{ $item->brand }}</span>
                             </li>
                             <li class="product-character-wrapper__indication--tables">
                                 <span class="product-character-wrapper__indication--property тип-цоколя">Тип цоколя</span>
@@ -129,7 +127,7 @@
                             </li>
                             <li class="product-character-wrapper__indication--tables">
                                 <span class="product-character-wrapper__indication--property страна-производитель">Страна производитель</span>
-                                <a class="product-character-wrapper__indication--name" href="#">{{ $item->madein }}</a>
+                                <span class="product-character-wrapper__indication--name" href="#">{{ $item->madein }}</span>
                             </li>
                         </ul>
                     </div>
@@ -171,7 +169,7 @@
                 <div class="w-100"></div>
                 <div class="reviews" style="margin-top: 20px;">
                     <div class="img-reviews">
-                        <img src="{{ asset('storage/images/product1.webp') }}" alt="">
+                        <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
                         <h6>Св-к Gauss LED линейный WLF-7 36W 3080lm 6500K IP40 1200*76*24mm 892625336</h6>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Написать отзыв</button>
 
@@ -184,7 +182,7 @@
                                     </div>
 
                                     <div class="product-name">
-                                        <img src="{{ asset('storage/images/product1.webp') }}" alt="">
+                                        <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
                                         <h5></h5>
                                     </div>
 
@@ -205,6 +203,7 @@
                                         <form method="post" action="{{ route('review_check', $item->id) }}">
                                             @csrf
                                             <div class="form-group">
+                                                <input type="hidden" name="item_id" value="{{ $item->id }}">
                                                 <label for="recipient-name" class="col-form-label">Достоинства</label>
                                                 <input type="text" class="form-control" name="pluses" id="recipient-name">
                                             </div>
@@ -235,29 +234,28 @@
                     <div class="reviews-cards">
                         <hr>
                         <div class="row">
-                            @if($reviews->isEmpty())
-                            <p>Нет отзывов для данного товара.</p>
-                            @else
-                            @foreach($reviews as $el)
+                            @forelse($item->contacts as $contact)
                             <div class="card bg-light mb-3" style="max-width: 300px; margin: 20px auto; max-height: 500px;">
                                 <div class="card-body">
                                     <div class="card-pluses" style="margin-bottom: 15px;">
                                         <b>Достоинства:</b>
-                                        <span>{{ $el->pluses }}</span>
+                                        <span>{{ $contact->pluses }}</span>
                                     </div>
                                     <div class="card-minuses">
                                         <b>Недостатки:</b>
-                                        <span>{{ $el->minuses }}</span>
+                                        <span>{{ $contact->minuses }}</span>
                                     </div>
                                     <div class="x" style="margin-top: 15px;">
                                         <b>Отзыв:</b>
-                                        <span>{{ $el->message }}</span>
+                                        <span>{{ $contact->message }}</span>
                                     </div>
                                 </div>
                             </div>
-                            @endforeach
-                            @endif
+                            @empty
+                            <p>Пока нет отзывов.</p>
+                            @endforelse
                         </div>
+                        
 
 
                     </div>
@@ -379,48 +377,6 @@
             color: black
         }
 
-        .email {
-            margin-top: 100px;
-            margin-bottom: 100px;
-            padding-left: 30px;
-            padding-right: 30px;
-
-        }
-
-        .email .field {
-            background-color: #DCDCDC;
-            margin-top: 30px;
-            border-radius: 10px;
-            padding: 40px 3%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .email .field p {
-            width: 550px;
-        }
-
-        .email .field input {
-            background: #fff;
-            outline: none;
-            border: 0;
-            border-radius: 5px;
-            width: 300px;
-            padding: 20px 30px;
-
-        }
-
-        .email .field button {
-            padding: 20px 30px;
-            border-radius: 5px;
-            transition: all 500ms ease;
-            cursor: pointer;
-            border: 0;
-            color: #fff;
-            background: #3389ea;
-        }
 
         footer {
             background: black;
@@ -670,6 +626,10 @@
         .col .price {
             margin-top: 15px;
             margin-bottom: 15px;
+        }
+
+        .col h4 {
+            max-width:75%;
         }
     </style>
 </body>

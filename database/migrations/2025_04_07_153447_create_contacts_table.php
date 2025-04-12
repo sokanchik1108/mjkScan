@@ -16,6 +16,11 @@ return new class extends Migration
             $table->string('pluses');
             $table->string('minuses');
             $table->text('message');
+
+                    // Добавляем колонку item_id
+        $table->unsignedBigInteger('item_id');
+        $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+        
             $table->timestamps(); // Время создания и обновления
         });
 
