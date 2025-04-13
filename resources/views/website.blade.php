@@ -260,12 +260,14 @@
   @include('partials.products')
 </div>
 
-<div id="loader" style="display: none; text-align: center; margin: 20px;">
-  Загрузка...
-</div>
+
 
 <div id="pagination-wrapper">
   @include('partials.pagination-wrapper')
+</div>
+
+<div id="loader" style="display: none; text-align: center; margin: 20px;">
+  Загрузка...
 </div>
 
 <script>
