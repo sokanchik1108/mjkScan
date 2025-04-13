@@ -267,9 +267,9 @@
 
         </div>
     </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    
 
 
     <footer>
@@ -307,75 +307,7 @@
             margin-top: 40px;
         }
 
-        .btn-more {
-            margin-left: 30px;
-            margin-top: 10px;
-            margin-right: 30px;
-            height: 46px;
-            line-height: 46px;
-            text-transform: uppercase;
-            font-size: 14px;
-            margin-top: 50px;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
 
-        .btn-more a:hover {
-            background: #D3D3D3;
-        }
-
-        .btn-more a {
-            text-decoration: none;
-            display: block;
-            width: 100%;
-            height: 100%;
-            background: #f9fafc;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-
-        .pagination {
-            margin-top: 20px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .pagination a {
-            display: block;
-            height: 30px;
-            line-height: 30px;
-            border-radius: 5px;
-            background: #fff;
-            padding: 0 12px;
-            transition: .3s;
-            color: #b1b9c2;
-            font-weight: 700;
-            position: relative
-        }
-
-        .pagination p {
-            display: block;
-            height: 30px;
-            line-height: 30px;
-            border-radius: 5px;
-            background: #fff;
-            padding: 0 12px;
-            transition: .3s;
-            color: #b1b9c2;
-            font-weight: 700;
-            position: relative
-        }
-
-        .pagination a:hover {
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            color: black
-        }
 
 
         footer {

@@ -138,37 +138,6 @@
   }
 
 
-
-
-  .btn-more {
-    margin-left: 30px;
-    margin-top: 10px;
-    margin-right: 30px;
-    height: 46px;
-    line-height: 46px;
-    text-transform: uppercase;
-    font-size: 14px;
-    margin-top: 50px;
-    text-align: center;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  .btn-more a:hover {
-    background: #D3D3D3;
-  }
-
-  .btn-more a {
-    text-decoration: none;
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: #f9fafc;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 14px;
-  }
-
   footer {
     background: black;
     padding: 50px 50px;
@@ -288,63 +257,82 @@
   </div>
 
   <div id="products-container">
-    @include('partials.pagination')
-  </div>
+  @include('partials.products')
+</div>
 
-  <div id="loader" style="display: none; text-align: center; margin: 20px;">
-    Загрузка...
-  </div>
+<div id="loader" style="display: none; text-align: center; margin: 20px;">
+  Загрузка...
+</div>
 
-  <footer>
-    <div class="container">
-      <div class="blocks ">
-        <div>
-          <p class="logo">MJK</p>
-          <p>Алмата, зеленый базар, контеинер №10. <br>
-            +7 747 289 41 61</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+<div id="pagination-wrapper">
+  @include('partials.pagination-wrapper')
+</div>
 
-  <script>
-    let isLoading = false;
+<script>
+  let isLoading = false;
 
-    function loadPage(url) {
-      if (isLoading) return; // блокируем повторные клики
-      isLoading = true;
+  function loadPage(url, append = false) {
+    if (isLoading) return;
+    isLoading = true;
 
-      document.getElementById('loader').style.display = 'block';
+    document.getElementById('loader').style.display = 'block';
 
-      fetch(url, {
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        })
-        .then(response => response.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
+    fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(response => response.text())
+      .then(html => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
 
-          const newProducts = doc.querySelector('#products-container');
-          const newPagination = doc.querySelector('#pagination-wrapper');
+        const newProducts = doc.querySelector('#products-container');
+        const newPagination = doc.querySelector('#pagination-wrapper');
 
-          if (newProducts && newPagination) {
-            document.getElementById('products-container').innerHTML = newProducts.innerHTML;
-            document.getElementById('pagination-wrapper').innerHTML = newPagination.innerHTML;
-            attachAjaxHandlers(); // привязать заново клики
+        if (newProducts && newPagination) {
+          const currentProducts = document.getElementById('products-container');
+          const currentPagination = document.getElementById('pagination-wrapper');
+
+          if (append) {
+            currentProducts.insertAdjacentHTML('beforeend', newProducts.innerHTML);
+          } else {
+            currentProducts.innerHTML = newProducts.innerHTML;
           }
 
-          document.getElementById('loader').style.display = 'none';
-          isLoading = false;
-        })
-        .catch(error => {
-          console.error('Ошибка при загрузке:', error);
-          isLoading = false;
-          document.getElementById('loader').style.display = 'none';
-        });
+          currentPagination.innerHTML = newPagination.innerHTML;
+          attachAjaxHandlers(); // повторно вешаем обработчики
+        }
+
+        document.getElementById('loader').style.display = 'none';
+        isLoading = false;
+      })
+      .catch(error => {
+        console.error('Ошибка загрузки:', error);
+        document.getElementById('loader').style.display = 'none';
+        isLoading = false;
+      });
+  }
+
+  function attachAjaxHandlers() {
+    // Кнопка "Показать ещё"
+    const showMore = document.querySelector('.js-showmore');
+    if (showMore) {
+      showMore.addEventListener('click', function (e) {
+        e.preventDefault();
+        loadPage(this.href, true); // append = true
+      });
     }
-  </script>
+
+    // Клики по номерам страниц (если нужно)
+    document.querySelectorAll('.pagination__text a, .pagination__num a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        loadPage(this.href);
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', attachAjaxHandlers);
+</script>
 
 
 

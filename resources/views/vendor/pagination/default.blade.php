@@ -1,3 +1,12 @@
+@if ($paginator->hasMorePages())
+  <div class="btn-more" style="text-align: center; margin-top: 30px;">
+    <a class="js-showmore" href="{{ $paginator->nextPageUrl() }}" >
+      ПОКАЗАТЬ ЕЩЁ
+    </a>
+  </div>
+@endif
+
+
 @if ($paginator->hasPages())
 <div class="pagination">
 
@@ -62,6 +71,8 @@
 
 
 <style>
+
+
     .pagination {
         display: flex;
         justify-content: center;
@@ -69,6 +80,7 @@
         gap: 8px;
         margin-top: 30px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin-bottom: 30px;
     }
 
     .pagination__num,
@@ -140,4 +152,33 @@
             padding: 0 8px;
         }
     }
+
+    .btn-more {
+    margin-left: 30px;
+    margin-top: 10px;
+    margin-right: 30px;
+    height: 46px;
+    line-height: 46px;
+    text-transform: uppercase;
+    font-size: 14px;
+    margin-top: 50px;
+    text-align: center;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .btn-more a:hover {
+    background: #D3D3D3;
+  }
+
+  .btn-more a {
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #f9fafc;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+  }
 </style>

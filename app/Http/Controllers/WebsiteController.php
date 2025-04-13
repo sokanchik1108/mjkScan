@@ -81,11 +81,12 @@ class WebsiteController extends Controller
         $items = Item::paginate(10);
     
         if ($request->ajax()) {
-            return view('partials.pagination', compact('items'))->render(); // один и тот же шаблон
+            return view('partials.ajax-content', compact('items'))->render();
         }
     
         return view('website', compact('items'));
     }
+    
 
 
 }
