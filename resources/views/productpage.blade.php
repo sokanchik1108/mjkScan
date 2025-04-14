@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJK</title>
+   
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
@@ -164,6 +166,7 @@
                                 }
                             }
                         </script>
+
                     </div>
                 </div>
                 <div class="w-100"></div>
@@ -216,7 +219,7 @@
                                                 <textarea class="form-control" name="message" id="message-text" required></textarea>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                                                 <button type="submit" class="btn btn-success">Отправить отзыв</button>
                                             </div>
                                         </form>
@@ -282,6 +285,8 @@
                 </div>
             </div>
         </div>
+        <hr>
+        <p>© 2024 Company, Inc. All rights reserved.</p>
     </footer>
 
     <script>
@@ -292,6 +297,7 @@
             else alert('Все отлично!')
         }
     </script>
+
     <style>
         .container {
             display: flex;
@@ -564,6 +570,10 @@
             max-width:75%;
         }
     </style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-7V6hCkpzYWvJkzm0Fgybh2vnX1V2fdSKxlPB9/lqG22ugvA8/NHeY9fYxANwGQ6D" crossorigin="anonymous"></script>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
@@ -270,6 +272,24 @@
   Загрузка...
 </div>
 
+<footer>
+    <div class="container">
+      <div class="blocks ">
+        <div>
+          <p class="logo">MJK</p>
+          <p>Алмата, зеленый базар, контеинер №10. <br>
+            +7 747 289 41 61</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <p>© 2024 Company, Inc. All rights reserved.</p>
+  </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+
+
 <script>
   let isLoading = false;
 
@@ -335,6 +355,9 @@
 
   document.addEventListener('DOMContentLoaded', attachAjaxHandlers);
 </script>
+
+
+
 
 
 
