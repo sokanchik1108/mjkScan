@@ -5,60 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MJK</title>
-   
+
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
 <body>
-    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Offcanvas with body scrolling</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <p>Try scrolling the rest of the page to see this option in action.</p>
-        </div>
-    </div>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">MJK</a>
+    
+   @include('partials.navbar')
 
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Enable body scrolling</button>
-
-
-            <div class="collapse navbar-collapse" id="navbarScroll">
-                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/website">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Link
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Link</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
-        </div>
-    </nav>
     <div class="container">
         <div class="block">
             <div class="row">
@@ -87,7 +42,7 @@
 
                     <div class="cod">
                         <p1>Рейтинг: <span id="rating">0</span> звезд</p1>
-                        <p>код: 1239703</p>
+                        
                     </div>
 
                     <script src="script.js">
@@ -146,7 +101,7 @@
 
                         <div class="description" id="description">
                             <h3>Характеристики</h3>
-                            <p>{{ $item->detailed }}</p>
+                            <p class="preserve-lines">{{ $item->detailed }}</p>
                         </div>
                         @endif
 
@@ -173,7 +128,7 @@
                 <div class="reviews" style="margin-top: 20px;">
                     <div class="img-reviews">
                         <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
-                        <h6>Св-к Gauss LED линейный WLF-7 36W 3080lm 6500K IP40 1200*76*24mm 892625336</h6>
+                        <h6>{{ $item->product_name }}</h6>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Написать отзыв</button>
 
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -186,7 +141,7 @@
 
                                     <div class="product-name">
                                         <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
-                                        <h5></h5>
+                                        <h5>{{ $item->product_name }}</h5>
                                     </div>
 
                                     <div class="modal-body">
@@ -258,7 +213,7 @@
                             <p>Пока нет отзывов.</p>
                             @endforelse
                         </div>
-                        
+
 
 
                     </div>
@@ -271,23 +226,7 @@
         </div>
     </div>
 
-
-    
-
-
-    <footer>
-        <div class="container">
-            <div class="blocks ">
-                <div>
-                    <span class="logo">MJK</span>
-                    <p>Алмата, зеленый базар, контеинер №10. <br>
-                        +7 747 289 41 61</p>
-                </div>
-            </div>
-        </div>
-        <hr>
-        <p>© 2024 Company, Inc. All rights reserved.</p>
-    </footer>
+    @include('partials.footer')
 
     <script>
         function checkEmail() {
@@ -316,57 +255,7 @@
 
 
 
-        footer {
-            background: black;
-            padding: 50px 50px;
-            width: 100%;
-
-        }
-
-
-        footer .blocks {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        footer .blocks .logo {
-            color: white;
-            font-size: 29px;
-            font-weight: 800;
-        }
-
-        footer .blocks p {
-            color: white;
-            opacity: 0.8;
-        }
-
-        footer .blocks h4 {
-            font-size: 17;
-            font-weight: 600;
-            color: white;
-        }
-
-        footer .blocks ul {
-            list-style: none;
-        }
-
-        footer .blocks ul li {
-            color: white;
-            opacity: 0.8;
-            margin-top: 7px;
-        }
-
-        footer hr {
-            margin: 30px 0;
-            height: 2.0;
-            color: #ccc;
-        }
-
-        footer p {
-            text-align: center;
-            color: #ccc;
-        }
-
+        
         .block {
             margin: 100px auto;
             max-width: 1200px;
@@ -408,13 +297,8 @@
             color: gold;
         }
 
-        .cod {
-            width: 400px;
-        }
 
-        .cod p {
-            float: right;
-        }
+
 
         .product-character-wrapper__indication {
             max-width: 400px;
@@ -567,12 +451,16 @@
         }
 
         .col h4 {
-            max-width:75%;
+            max-width: 75%;
+        }
+
+        .preserve-lines {
+            white-space: pre-line;
         }
     </style>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

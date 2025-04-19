@@ -78,14 +78,77 @@ class WebsiteController extends Controller
 
     public function website(Request $request)
     {
-        $items = Item::paginate(10);
-    
-        if ($request->ajax()) {
-            return view('partials.ajax-content', compact('items'))->render();
-        }
+        $items = Item::paginate(1);
     
         return view('website', compact('items'));
     }
+
+
+    public function add(Request $request, $id)
+{
+    $cart = session()->get('cart', []);
+
+    // Получаем товар из базы данных
+    $item = Item::find($id);
+
+    // Проверяем, найден ли товар
+    if (!$item) {
+        return redirect()->back()->with('error', 'Товар не найден!');
+    }
+
+
+    // Подготовка данных о товаре для добавления в корзину
+    $product = [
+        'name' => $item->product_name,
+        'price' => (float)$item->sale_price,
+        'quantity' => (int) $request->quantity,
+        'image' => asset('storage/' . $item->img_path), 
+    ];
+
+    // Добавляем товар в корзину
+    $cart[] = $product;
+    session()->put('cart', $cart);
+
+    return redirect()->back()->with('success', 'Товар добавлен!',compact('item','cart'))->with('item', $item);
+    
+
+}
+
+public function index()
+{
+    $cart = session()->get('cart', []);
+
+    $total = 0;
+    foreach ($cart as $item) {
+        $total += $item['price'] * $item['quantity'];
+    }
+    
+    return view('basket', compact('cart'));
+}
+
+
+public function remove(Request $request)
+{
+    $cart = session()->get('cart', []);
+    unset($cart[$request->index]);
+    session()->put('cart', array_values($cart));
+    return redirect('/cart');
+}
+
+public function clear(Request $request)
+{
+    // Очистить корзину
+    session()->forget('cart');
+
+    return redirect()->route('cart.index')->with('success', 'Корзина очищена');
+}
+
+
+
+
+
+
+
     
 
 

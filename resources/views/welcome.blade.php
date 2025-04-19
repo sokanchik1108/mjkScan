@@ -128,7 +128,7 @@
             <!-- Цена продажи -->
             <div class="form-group">
                 <label for="sale-price">Цена продажи</label>
-                <input type="text" id="sale-price" name="sale-price" required>
+                <input type="number" id="sale-price" name="sale-price" required>
             </div>
 
             <div class="form-group">
