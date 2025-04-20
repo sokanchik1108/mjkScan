@@ -30,7 +30,6 @@ class MainController extends Controller
             $item->article= $request->input('article');
             $item->basetype = $request->input('basetype');
             $item->power = $request->input('power');
-            $item->characteristics= $request->input('characteristics');
             $item->madein = $request->input('madein');
             $item->brand = $request->input('brand');
             $item->description = $request->input('description');

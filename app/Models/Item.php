@@ -13,6 +13,12 @@ class Item extends Model
     return $this->hasMany(Contact::class);
 }
 
+public function averageRating()
+{
+    $average = $this->contacts()->avg('rating');
+    return round($average, 1) ?: 0;
+}
+
 
 public function getFormattedPriceAttribute()
 {

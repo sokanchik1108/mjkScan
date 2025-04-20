@@ -18,6 +18,12 @@ class Contact extends Model
     return $this->belongsTo(Item::class);
 }
 
-protected $fillable = ['item_id', 'pluses', 'minuses', 'message'];
+protected $fillable = [
+    'pluses',
+    'minuses',
+    'message',
+    'rating',
+    'item_id',
+];
 
 }

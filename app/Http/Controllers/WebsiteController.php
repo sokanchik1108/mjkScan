@@ -15,24 +15,28 @@ class WebsiteController extends Controller
     
 
     public function review_check(Request $request, $id)
-{
-    // Создаем новый объект Contact
-    $review = new Contact();
+    {
+        // Валидируем входные данные
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',  // Рейтинг обязательно от 1 до 5
+        ]);
 
-    // Присваиваем значения полям объекта
-    $review->pluses = $request->input('pluses') ?? 'Не указаны';
-    $review->minuses = $request->input('minuses') ?? 'Не указаны';
-    $review->message = $request->input('message');
+        // Создаем новый объект Contact
+        $review = new Contact();
 
-    $review->item_id = $id;
+        // Присваиваем значения полям объекта
+        $review->pluses = $request->input('pluses') ?? 'Не указаны';
+        $review->minuses = $request->input('minuses') ?? 'Не указаны';
+        $review->message = $request->input('message');
+        $review->rating = $request->input('rating');  // Рейтинг
+        $review->item_id = $id;  // ID товара
 
-    // Сохраняем объект в базу данных
-    $review->save();
-    
-    
-    // Перенаправляем пользователя обратно на страницу товара
-    return redirect()->route('productpage.show', ['id' => $id])->with('success', 'Отзыв отправлен!');
-}
+        // Сохраняем объект в базу данных
+        $review->save();
+
+        // Перенаправляем пользователя обратно на страницу товара с сообщением
+        return redirect()->route('productpage.show', ['id' => $id])->with('success', 'Отзыв отправлен!');
+    }
 
     
 

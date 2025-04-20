@@ -16,15 +16,12 @@ return new class extends Migration
             $table->string('pluses');
             $table->string('minuses');
             $table->text('message');
+            $table->integer('rating');
+            $table->unsignedBigInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
 
-                    // Добавляем колонку item_id
-        $table->unsignedBigInteger('item_id');
-        $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
-        
-            $table->timestamps(); // Время создания и обновления
+            $table->timestamps(); 
         });
-
-        
     }
 
     /**
@@ -33,6 +30,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('contacts');
-
     }
 };
