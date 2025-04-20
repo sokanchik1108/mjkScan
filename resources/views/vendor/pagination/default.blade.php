@@ -113,7 +113,7 @@
   }
 
   .pagination__num.active span {
-    background-color: #007bff;
+    background-color: #FFC107;
     color: #fff;
     border-radius: 4px;
     font-weight: bold;

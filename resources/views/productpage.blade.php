@@ -11,8 +11,8 @@
 </head>
 
 <body>
-    
-   @include('partials.navbar')
+
+    @include('partials.navbar')
 
     <div class="container">
         <div class="block">
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="price">
-                        <h3>{{ $item->sale_price }}</h3>
+                        <h3>{{ number_format($item->sale_price, 0, '.', '.') }}</h3>
                     </div>
 
                     <div class="stars" id="stars">
@@ -42,7 +42,7 @@
 
                     <div class="cod">
                         <p1>Рейтинг: <span id="rating">0</span> звезд</p1>
-                        
+
                     </div>
 
                     <script src="script.js">
@@ -129,7 +129,7 @@
                     <div class="img-reviews">
                         <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
                         <h6>{{ $item->product_name }}</h6>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Написать отзыв</button>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Написать отзыв</button>
 
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
@@ -228,14 +228,6 @@
 
     @include('partials.footer')
 
-    <script>
-        function checkEmail() {
-            let email = document.querySelector('#emailField').value;
-            if (!email.includes('@')) alert('Нет символа @');
-            else if (!email.includes('.')) alert('Нет символа .')
-            else alert('Все отлично!')
-        }
-    </script>
 
     <style>
         .container {
@@ -253,19 +245,16 @@
         }
 
 
-
-
-        
         .block {
             margin: 100px auto;
             max-width: 1200px;
         }
 
-
-
         .block img {
-            width: 500px;
-            height: 500px;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            max-width: 500px;
         }
 
         .block .col h4 {
@@ -296,9 +285,6 @@
         .star.selected {
             color: gold;
         }
-
-
-
 
         .product-character-wrapper__indication {
             max-width: 400px;
@@ -393,23 +379,30 @@
         }
 
         .reviews .img-reviews {
+            display: flex;
+            align-items: center;
             justify-content: space-between;
-            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+
+        .reviews .img-reviews .btn-warning {
+            margin-left: auto;
+            height: 45px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+
 
         .reviews .img-reviews h6 {
             margin-left: 20px;
             margin-top: 40px;
         }
 
-        .reviews .img-reviews .btn-primary {
-            max-width: 200px;
-            max-height: 40px;
-            margin-top: 40px;
-            margin-left: 50px;
-            font-size: 15px;
-            border-radius: 10px;
-        }
+
 
         .reviews-cards {
             max-width: 1050px;
@@ -456,6 +449,96 @@
 
         .preserve-lines {
             white-space: pre-line;
+        }
+
+
+
+        /* Стили для мобильных устройств */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .block {
+                margin: 20px;
+                max-width: 100%;
+            }
+
+            .block img {
+                width: 100%;
+                height: auto;
+            }
+
+            .col {
+                max-width: 100%;
+                margin: 10px 0;
+            }
+
+            .price h3 {
+                font-size: 1.2rem;
+            }
+
+            .stars {
+                font-size: 1.5rem;
+            }
+
+            .description {
+                margin-top: 10px;
+                display: block;
+            }
+
+            .btn-description {
+                font-size: 1rem;
+            }
+
+            .reviews {
+                width: 100%;
+            }
+
+            .reviews .img-reviews {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .reviews .img-reviews img {
+                margin-top: 20px;
+            }
+
+            .reviews .img-reviews h6 {
+                margin: 10px 0;
+            }
+
+            .reviews .img-reviews .btn-warning {
+                max-width: 90%;
+                width: 90%;
+                height: 50px;
+                font-size: 18px;
+                font-weight: 600;
+                margin: 20px auto 0 auto;
+                border-radius: 12px;
+            }
+
+
+            .reviews-cards .card {
+                max-width: 100%;
+                margin: 10px 0;
+            }
+
+            .modal-body .stars {
+                font-size: 1.5rem;
+            }
+
+            .product-name img {
+                max-width: 100px;
+                max-height: 80px;
+            }
+
+            .product-name h5 {
+                font-size: 1rem;
+            }
+
         }
     </style>
 

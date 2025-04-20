@@ -13,23 +13,15 @@
           <a href="{{ route('productpage.show', ['id' => $item->id]) }}">{{ $item->product_name }}</a>
         </h5>
         <p class="card-text">Артикул: <span class="card-article">{{ $item->article }}</span></p>
-        <p class="card-price">{{ $item->sale_price }}</p>
+        <p class="card-price">{{ number_format($item->sale_price, 0, '.', '.') }} ₸</p>
 
         <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
           @csrf
-
-          <button type="submit" class="btn btn-primary" style="height: 40px; width: 200px;"> В корзину</button>
-
-
-
-          <input type="number"name="quantity"id="quantity1"value="1"min="1"class="form-control"style="max-width: 50px; height: 40px; font-size: 0.8rem;" required>
+          <button type="submit" class="btn btn-warning" style="height: 40px; width: 200px;"> В корзину</button>
+          <input type="number"name="quantity"id="quantity1"value="1"min="1"class="form-control"style="max-width: 60px; height: 40px; font-size: 0.8rem;" required>
         </form>
 
-        <form action="{{ route('item.delete', $item->id) }}" method="POST" style="margin-top: 10px;">
-          @csrf
-          @method('DELETE')
-          <button type="submit" class="btn btn-danger">Удалить</button>
-        </form>
+
       </div>
     </div>
   </div>
@@ -56,6 +48,7 @@
     justify-content: space-between;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
+    padding: 5px 5px;
   }
 
   .card a {
@@ -74,8 +67,6 @@
     height: 300px;
     /* Увеличиваем высоту изображения */
     object-fit: cover;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
   }
 
   .card-body {
@@ -112,8 +103,7 @@
 
   .card-price {
     font-size: 1.3em;
-    /* Увеличиваем размер шрифта для цены */
-    font-weight: bold;
+    
     color: black;
     margin: 10px 0;
   }

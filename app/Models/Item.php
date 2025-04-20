@@ -12,4 +12,10 @@ class Item extends Model
 {
     return $this->hasMany(Contact::class);
 }
+
+
+public function getFormattedPriceAttribute()
+{
+    return number_format($this->price, 0, '.', '.') . '₸';
+}
 }

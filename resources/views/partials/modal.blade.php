@@ -1,8 +1,8 @@
 <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal-sm"> <!-- Кастомный размер -->
         <div class="modal-content text-center">
-            <div class="modal-header text-white" style="background-color: #007bff;">
-                <h5 class="modal-title w-100" id="addToCartModalLabel">Товар добавлен в корзину</h5>
+            <div class="modal-header text-white" >
+                <h5 class="modal-title w-100" id="addToCartModalLabel" style="color: green;">Товар добавлен в корзину</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
             <div class="modal-body">
@@ -16,8 +16,8 @@
                 </div>
             </div>
             <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width:120px">Продолжить покупки</button>
-                <a href="{{ route('cart.index') }}" class="btn btn-success btn-sm" style="background-color: #007bff; border-color:#007bff;width:120px">Перейти в корзину</a>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width:120px;background-color:#FFC107;border-color:#FFC107">Продолжить покупки</button>
+                <a href="{{ route('cart.index') }}" class="btn btn-success btn-sm" style="width:120px">Перейти в корзину</a>
             </div>
         </div>
     </div>
