@@ -54,9 +54,16 @@
               </li>
       </ul>
 
-      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-        <input type="search" class="form-control form-control-dark text-bg-white text-dark" placeholder=" Поиск..." aria-label="Search">
-      </form>
+      <form action="{{ route('website') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+    <input 
+        type="search" 
+        name="query" 
+        class="form-control form-control-dark text-bg-white text-dark" 
+        placeholder=" Поиск..." 
+        aria-label="Search" 
+        value="{{ request('query') }}"
+    >
+</form>
 
       <div class="text-end">
         <button class="btn btn-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" style="width: 100px;margin-right: 5px;height:38px">Каталог</button>
@@ -72,8 +79,7 @@
 
   </header>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76A2z02tPqdjfvJ40I2FfN3lrzNRv8I4e+9FqztTnNE/ztO3jD8mW8XjF6kzvbt" crossorigin="anonymous"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </body>
 

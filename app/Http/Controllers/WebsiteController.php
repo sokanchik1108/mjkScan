@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\Item;
+use Illuminate\Support\Facades\DB;
 
 class WebsiteController extends Controller
 {
@@ -80,12 +81,20 @@ class WebsiteController extends Controller
     }
 
 
-    public function website(Request $request)
-    {
+public function website(Request $request)
+{
+    $query = $request->input('query');
+
+    if ($query) {
+        $items = Item::where('product_name', 'LIKE', '%' . $query . '%')
+            ->orWhere('description', 'LIKE', '%' . $query . '%')
+            ->paginate(1);
+    } else {
         $items = Item::paginate(1);
-    
-        return view('website', compact('items'));
     }
+
+    return view('website', compact('items'));
+}
 
 
     public function add(Request $request, $id)

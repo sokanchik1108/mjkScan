@@ -272,7 +272,7 @@
 
             {{-- Кнопка оформления заказа выровненная справа --}}
             <div class="order-button-container mt-4">
-                <a href="{{ route('order.create') }}" class="btn btn-success">Оформить заказ</a>
+                <a href="{{ route('payment') }}" class="btn btn-success">Оформить заказ</a>
             </div>
 
 

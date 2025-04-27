@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\PaymentController;
+
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,6 +15,14 @@ Route::get('/', function () {
 Route::get('/website', function () {
     return view('website');
 });
+
+Route::get('/payment', function () {
+    return view('payment');
+})->name('payment');
+
+
+
+Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
 
 
 
@@ -33,11 +45,9 @@ Route::get('/product/{id}', [MainController::class, 'viewProduct'])->name('viewP
 
 Route::get('/product/{id}', [MainController::class, 'show'])->name('product.show');
 
-
 Route::get("/website", [WebsiteController::class, 'website'])->name('website');
 
 Route::delete('/item/{id}', [WebsiteController::class, 'destroy'])->name('item.delete');
-
 
 Route::post('/productpage/{id}/review', [WebsiteController::class, 'review_check'])->name('review_check');
 
@@ -48,8 +58,5 @@ Route::post('/cart/add/{id}', [WebsiteController::class, 'add'])->name('cart.add
 Route::get('/cart', [WebsiteController::class, 'index'])->name('cart.index');
 
 Route::post('/cart/remove', [websiteController::class, 'remove'])->name('cart.remove');
-
-
-Route::get('/order/create', [websiteController::class, 'create'])->name('order.create');
 
 Route::post('/cart/clear', [websiteController::class, 'clear'])->name('cart.clear');
