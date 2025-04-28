@@ -11,22 +11,26 @@
 <body>
   <header class="p-3 text-bg-white">
 
-    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-      <div class="offcanvas-header">
+  <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="true" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
         <h4 class="offcanvas-title" id="offcanvasScrollingLabel">Каталог</h4>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul>
-          <li>
-            <a href="/website/lambs">Лампы</a>
-          </li>
-          <li>Люстры</li>
-          <li>Лампы</li>
-
-        </ul>
-      </div>
     </div>
+    <div class="offcanvas-body">
+        <h1>Список категорий</h1>
+
+        <ul>
+        @foreach ($categories as $category)
+            <li>
+                <a href="{{ route('categories.items', $category->id) }}">{{ $category->name }}</a>
+            </li>
+        @endforeach
+    </ul>
+
+
+    </div>
+</div>
+
 
 
     <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">

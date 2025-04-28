@@ -31,13 +31,13 @@ Route::get('/', [MainController::class, 'welcome'])->name('welcome');
 
 Route::post('/formcheck', [MainController::class, 'form_check']);
 
-Route::get("getItem", [MainController::class, 'getItem'])->name('getItem');
+Route::get('/getItem', [MainController::class, 'getItem'])->name('getItem');
 
 Route::post('/formchek', [MainController::class, 'saveFile']);
 
 Route::delete('/items/{id}', [MainController::class, 'deleteItem'])->name('deleteItem');
 
-Route::put('/items/{id}', [MainController::class, 'updateItem']);
+Route::put('/updateitems/{id}', [MainController::class, 'updateItem']);
 
 Route::get('/scan', [MainController::class, 'scanQr'])->name('scanQr');  // Страница для сканирования QR
 
@@ -60,3 +60,11 @@ Route::get('/cart', [WebsiteController::class, 'index'])->name('cart.index');
 Route::post('/cart/remove', [websiteController::class, 'remove'])->name('cart.remove');
 
 Route::post('/cart/clear', [websiteController::class, 'clear'])->name('cart.clear');
+
+Route::get('/category/{category}', [WebsiteController::class, 'showItemsByCategory'])->name('categories.items');
+
+Route::get('/websitegetItem', [WebsiteController::class, "websitegetItem"])->name('websitegetItem');
+
+Route::put('/updatewebsiteItems/{id}', [WebsiteController::class, 'updatewebsiteItem'])->name('updatewebsiteItems');
+
+

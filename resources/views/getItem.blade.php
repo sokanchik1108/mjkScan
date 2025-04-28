@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>База данных</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
@@ -12,13 +12,77 @@
 <body>
 
 <style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
     .container {
         display: flex;
-        gap: 20px; /* расстояние между карточками */
-        justify-content: center; /* выравнивание карточек по центру */
-        flex-wrap: wrap; /* чтобы карточки переходили на новую строку, если не вмещаются */
-      } 
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 20px;
+    }
+
+    .card {
+        width: 20rem;
+        margin: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        background-color: #ffffff;
+        padding: 15px;
+    }
+
+    .card-text {
+        font-weight: 600; /* <-- Сделал полужирным */
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-control, select, textarea {
+        border-radius: 5px;
+        padding: 8px;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    h4 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .alert {
+        margin: 15px auto;
+        max-width: 960px;
+        text-align: center;
+    }
 </style>
+
 
 
 @if(session('success'))
@@ -48,7 +112,7 @@
             <h4>Обновление товара</h4>
 
             <!-- Форма для обновления товара -->
-            <form action="{{ url('items/' . $item->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url('updateitems/' . $item->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -69,7 +133,7 @@
 
                 <div class="form-group">
                     <label for="sale-price-{{ $item->id }}">Цена продажи</label>
-                    <input type="text" class="form-control" id="sale-price-{{ $item->id }}" name="sale-price" value="{{ $item->sale_price }}" required>
+                    <input type="number" class="form-control" id="sale-price-{{ $item->id }}" name="sale-price" value="{{ $item->sale_price }}" required>
                 </div>
 
 

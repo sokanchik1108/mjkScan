@@ -25,9 +25,11 @@ return new class extends Migration
             $table->string('madein')->nullable();  // Если столбец может быть пустым
             $table->string('basetype')->nullable();  // Если столбец может быть пустым
             $table->text('description')->nullable();  // Если столбец может быть пустым
-            $table->text('detailed')->nullable();  
+            $table->text('detailed')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();; // Категория товара
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade')->nullable();;
             $table->timestamps();
-        });
+        });           
     }
 
     /**

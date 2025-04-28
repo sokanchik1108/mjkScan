@@ -17,6 +17,7 @@
           </h5>
           <p class="card-text">Артикул: <span class="card-article">{{ $item->article }}</span></p>
           <p class="card-price">{{ number_format($item->sale_price, 0, '.', '.') }} ₸</p>
+          <p class="card-text">{{ $item->quantity }}</p>
 
           <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
             @csrf

@@ -1,20 +1,18 @@
 @if ($paginator->hasMorePages())
 <div class="btn-more" style="text-align: center;">
-  <a class="js-showmore" href="{{ $paginator->nextPageUrl() }}">
+  <a class="js-showmore" href="{{ $paginator->nextPageUrl() . '&query=' . request()->query('query') }}">
     ПОКАЗАТЬ ЕЩЁ
   </a>
 </div>
 @endif
 
-
 <div class="pagination">
-
   {{-- В начало --}}
   @if ($paginator->onFirstPage())
   <div class="pagination__text disabled">В начало</div>
   @else
   <div class="pagination__text">
-    <a href="{{ $paginator->url(1) }}">В начало</a>
+    <a href="{{ $paginator->url(1) . '&query=' . request()->query('query') }}">В начало</a>
   </div>
   @endif
 
@@ -23,35 +21,35 @@
   <div class="pagination__text disabled">Назад</div>
   @else
   <div class="pagination__text">
-    <a href="{{ $paginator->previousPageUrl() }}">Назад</a>
+    <a href="{{ $paginator->previousPageUrl() . '&query=' . request()->query('query') }}">Назад</a>
   </div>
   @endif
 
   {{-- Номера страниц --}}
   @foreach ($elements as $element)
-  {{-- "..." --}}
-  @if (is_string($element))
-  <div class="pagination__num dots"><span>{{ $element }}</span></div>
-  @endif
+    {{-- "..." --}}
+    @if (is_string($element))
+      <div class="pagination__num dots"><span>{{ $element }}</span></div>
+    @endif
 
-  {{-- Ссылки на страницы --}}
-  @if (is_array($element))
-  @foreach ($element as $page => $url)
-  @if ($page == $paginator->currentPage())
-  <div class="pagination__num active"><span>{{ $page }}</span></div>
-  @else
-  <div class="pagination__num">
-    <a href="{{ $url }}">{{ $page }}</a>
-  </div>
-  @endif
-  @endforeach
-  @endif
+    {{-- Ссылки на страницы --}}
+    @if (is_array($element))
+      @foreach ($element as $page => $url)
+        @if ($page == $paginator->currentPage())
+          <div class="pagination__num active"><span>{{ $page }}</span></div>
+        @else
+          <div class="pagination__num">
+            <a href="{{ $url . '&query=' . request()->query('query') }}">{{ $page }}</a>
+          </div>
+        @endif
+      @endforeach
+    @endif
   @endforeach
 
   {{-- Вперёд --}}
   @if ($paginator->hasMorePages())
   <div class="pagination__text">
-    <a href="{{ $paginator->nextPageUrl() }}">Вперёд</a>
+    <a href="{{ $paginator->nextPageUrl() . '&query=' . request()->query('query') }}">Вперёд</a>
   </div>
   @else
   <div class="pagination__text disabled">Вперёд</div>
@@ -60,12 +58,13 @@
   {{-- В конец --}}
   @if ($paginator->hasMorePages())
   <div class="pagination__text">
-    <a href="{{ $paginator->url($paginator->lastPage()) }}">В конец</a>
+    <a href="{{ $paginator->url($paginator->lastPage()) . '&query=' . request()->query('query') }}">В конец</a>
   </div>
   @else
   <div class="pagination__text disabled">В конец</div>
   @endif
 </div>
+
 
 
 

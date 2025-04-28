@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Форма для товаров</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -107,6 +107,18 @@
                 <input type="file" id="product_image" name="product-image" accept="image/*" onchange="previewImage(event)" required>
             </div>
 
+            <div class="form-group">
+                <label for="category_id">Категория:</label>
+                <select name="category_id" id="category_id">
+                    <option value="" disabled selected>Выберите категорию</option>
+                    @foreach ($categories as $category)
+                    <option value="{{ $category->id }}">
+                        {{ $category->name }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Название товара -->
             <div class="form-group">
                 <label for="product-name">Название товара</label>
@@ -164,6 +176,8 @@
                 <label for="detailed">Развернутое описание</label>
                 <textarea id="detailed" name="detailed" rows="4" style="width: 95%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;height:200px"></textarea>
             </div>
+
+
 
             <!-- Кнопка сохранения -->
             <div class="form-group">
