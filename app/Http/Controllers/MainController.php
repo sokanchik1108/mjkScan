@@ -14,7 +14,7 @@ class MainController extends Controller
     // Метод для отображения страницы с товарами
     public function welcome()
     {
-        $categories = Category::all();
+        $categories = Category::with('types')->get(); 
 
         return view('welcome',compact('categories'));
     }
@@ -38,6 +38,7 @@ class MainController extends Controller
             $item->description = $request->input('description');
             $item->detailed = $request->input('detailed');
             $item->category_id = $request->input('category_id');
+            $item->type_id = $request->input('type_id');
             // Сохраняем файл и получаем путь
             $imagePath = $this->saveFile($request);
     

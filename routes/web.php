@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\PaymentController;
-
-
-
+use App\Models\Category;
 
 Route::get('/', function () {
     return view('welcome');
@@ -66,5 +64,13 @@ Route::get('/category/{category}', [WebsiteController::class, 'showItemsByCatego
 Route::get('/websitegetItem', [WebsiteController::class, "websitegetItem"])->name('websitegetItem');
 
 Route::put('/updatewebsiteItems/{id}', [WebsiteController::class, 'updatewebsiteItem'])->name('updatewebsiteItems');
+
+Route::get('api/types/{categoryId}', [WebsiteController::class, 'getTypes'])->name('api.types');
+
+Route::get('/categories/{id}/types', [WebsiteController::class, 'getTypes']);
+
+// Для показа товаров определённого типа в категории
+Route::get('categories/{categoryId}/types/{typeId}', [WebsiteController::class, 'show'])->name('types.show');
+
 
 

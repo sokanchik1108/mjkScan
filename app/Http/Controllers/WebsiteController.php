@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\Item;
+use App\Models\Type;
 use App\Models\Category;
 use Illuminate\Contracts\Support\ValidatedData;
 
@@ -95,9 +96,8 @@ class WebsiteController extends Controller
             $items = Item::with('category')->paginate(1);
         }
 
-        $categories = Category::all();
-
-        return view('website', compact('items','categories'));
+        $items = Item::with(['category', 'type'])->paginate(1);
+        return view('website', compact('items'));
     }
 
 
@@ -261,9 +261,21 @@ class WebsiteController extends Controller
     }
 
 
+    public function getTypes($categoryId)
+    {
+        $types = Type::where('category_id', $categoryId)->get();
+        return response()->json($types);
+    }
 
-
-
+    public function show($categoryId, $typeId)
+    {
+        $category = Category::findOrFail($categoryId);
+        $type = $category->types()->findOrFail($typeId);
+        $items = $type->items()->paginate(1);
+    
+        return view('types', compact('category', 'type', 'items'));
+    }
+    
 
 
 

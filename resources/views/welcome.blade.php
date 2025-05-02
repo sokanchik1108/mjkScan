@@ -85,6 +85,7 @@
 </head>
 
 <body>
+
     <div class="form-container">
         <h2>Добавить товар</h2>
 
@@ -118,6 +119,14 @@
                     @endforeach
                 </select>
             </div>
+
+            <div class="form-group">
+                <label for="type_id">Тип товара:</label>
+                <select name="type_id" id="type_id" class="form-control">
+                    <option value="" disabled selected>Выберите тип</option>
+                </select>
+            </div>
+
 
             <!-- Название товара -->
             <div class="form-group">
@@ -232,6 +241,22 @@
             // Выводим данные в консоль
             console.log('Данные товара:', productData);
         }
+
+        document.getElementById('category_id').addEventListener('change', function() {
+            const categoryId = this.value;
+            fetch(`/api/types/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const typeSelect = document.getElementById('type_id');
+                    typeSelect.innerHTML = '<option value="" disabled selected>Выберите тип</option>';
+                    data.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = type.id;
+                        option.textContent = type.name;
+                        typeSelect.appendChild(option);
+                    });
+                });
+        });
     </script>
 </body>
 

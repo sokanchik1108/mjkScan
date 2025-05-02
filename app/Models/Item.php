@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
 
-    public function contacts()
-{
-    return $this->hasMany(Contact::class);
-}
+
+    use HasFactory;
+
+    // Таблица товаров
+    protected $fillable = [
+        'product_name', 'quantity', 'purchase_price', 'sale_price', 'img_path', 'category_id', 'type_id'
+    ];
 
     // Связь с категорией
     public function category()
@@ -19,7 +22,18 @@ class Item extends Model
         return $this->belongsTo(Category::class);
     }
 
-    protected $fillable = ['name', 'price', 'category_id' ,];
+    // Связь с типом товара
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
+
+
+
+    public function contacts()
+{
+    return $this->hasMany(Contact::class);
+}
 
 
 public function averageRating()
@@ -33,4 +47,5 @@ public function getFormattedPriceAttribute()
 {
     return number_format($this->price, 0, '.', '.') . '₸';
 }
+
 }

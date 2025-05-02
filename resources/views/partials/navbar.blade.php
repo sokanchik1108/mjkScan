@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Карточки товаров</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -17,15 +18,30 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <h1>Список категорий</h1>
 
-        <ul>
-        @foreach ($categories as $category)
-            <li>
-                <a href="{{ route('categories.items', $category->id) }}">{{ $category->name }}</a>
-            </li>
-        @endforeach
-    </ul>
+    <div class="list-group list-group-flush border-bottom scrollarea">
+    @foreach($categories as $category)
+        <div class="list-group-item list-group-item-action lh-sm py-3">
+            <div class="d-flex w-100 align-items-center justify-content-between">
+                <h3 class="mb-1">
+                    <a href="{{ route('categories.items', $category->id) }}" class=" text-dark">
+                        {{ $category->name }}
+                    </a>
+                </h3>
+            </div>
+
+            <div class="col-10 mb-1 ">
+                @foreach($category->types as $type)
+                    <a href="{{ route('types.show', ['categoryId' => $category->id, 'typeId' => $type->id]) }}" class=" d-block">
+                        {{ $type->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endforeach
+</div>
+
+
 
 
     </div>
@@ -83,8 +99,12 @@
 
   </header>
 
+
+
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+    </script>
 </body>
 
 </html>
@@ -98,6 +118,25 @@
   max-width: 300px;
 }
 
+.col-10 a {
+  text-decoration: none;
+  max-width: 50%;
+  color: gray;
+  margin-top: 5px;
+}
+
+.col-10 a:hover {
+  text-decoration: underline;
+}
+
+.mb-1 a {
+  text-decoration:none;
+}
+
+.mb-1 a:hover{
+  text-decoration:underline;
+}
+
 @media (max-width: 576px) {
     .offcanvas {
       max-width: 250px;
@@ -106,3 +145,5 @@
 
 
 </style>
+
+

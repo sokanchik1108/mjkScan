@@ -26,8 +26,10 @@ return new class extends Migration
             $table->string('basetype')->nullable();  // Если столбец может быть пустым
             $table->text('description')->nullable();  // Если столбец может быть пустым
             $table->text('detailed')->nullable();
-            $table->unsignedBigInteger('category_id')->nullable();; // Категория товара
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade')->nullable();;
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->unsignedBigInteger('type_id')->nullable();
+            $table->foreign('type_id')->references('id')->on('types')->onDelete('cascade');
             $table->timestamps();
         });           
     }
@@ -37,6 +39,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         Schema::dropIfExists('items');
+        Schema::enableForeignKeyConstraints();
     }
+    
 };

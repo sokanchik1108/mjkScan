@@ -13,14 +13,13 @@
   </footer>
 
   <style>
-      footer {
-    background: black;
-    padding: 50px 50px;
-    margin-top: 100px;
 
 
-  }
-
+    footer {
+  background: black;
+  padding: 50px 50px;
+  margin-top: auto;
+}
 
   footer .blocks {
     display: flex;

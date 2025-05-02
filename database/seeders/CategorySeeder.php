@@ -10,9 +10,10 @@ class CategorySeeder extends Seeder
     public function run()
     {
         // Добавляем несколько категорий
-        Category::create(['name' => 'Потолочные люстры']);
-        Category::create(['name' => 'Подвесные люстры']);
-        Category::create(['name' => 'Настенные люстры']);
+        Category::create(['name' => 'Люстры']);
+        Category::create(['name' => 'Светильники']);
+        Category::create(['name' => 'Розетки']);
     }
 }
+
 

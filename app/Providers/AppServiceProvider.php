@@ -26,9 +26,12 @@ class AppServiceProvider extends ServiceProvider
         URL::forceScheme('https');
     }
 
+
     View::composer('*', function ($view) {
-        $view->with('categories', Category::all());
+        $categories = Category::with('types')->get(); // загрузка типов вместе с категориями
+        $view->with('categories', $categories);
     });
+    
 }
 
 
