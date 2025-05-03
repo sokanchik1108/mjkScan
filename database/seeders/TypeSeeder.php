@@ -10,6 +10,7 @@ class TypeSeeder extends Seeder
 {
     public function run()
     {
+
         // Пример категорий и типов для каждой категории
         $categories = Category::all(); // Загружаем все категории
 
@@ -24,16 +25,7 @@ class TypeSeeder extends Seeder
                     'name' => 'Настенные',
                     'category_id' => $category->id,
                 ]);
-            } elseif ($category->name == 'Техника') {
-                Type::create([
-                    'name' => 'Телевизоры',
-                    'category_id' => $category->id,
-                ]);
-                Type::create([
-                    'name' => 'Холодильники',
-                    'category_id' => $category->id,
-                ]);
-            }
+            } 
             // Добавьте дополнительные условия для других категорий
             elseif ($category->name == 'Светильники') {
                 Type::create([

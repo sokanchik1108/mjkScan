@@ -172,7 +172,6 @@ class WebsiteController extends Controller
         return view('categories.items', compact('items', 'category','categories'));
     }
 
-
     public function websitegetItem(Request $request)
     {
         $items = Item::all();
@@ -182,84 +181,76 @@ class WebsiteController extends Controller
 
     public function updatewebsiteItem(Request $request, $id)
     {
-        // Находим товар по ID
         $item = Item::find($id);
     
         if (!$item) {
             return redirect()->route('websitegetItem')->with('error', 'Товар не найден');
         }
     
-        // Валидация данных
-        $validatedData = $request->validate([
-            'article' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'madein' => 'required|string|max:255',
-            'power' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'detailed' => 'required|string|max:255',
-            'basetype' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id' // добавим валидацию на существование категории
-    ]);
-    
-        // Флаг для отслеживания изменений
         $isUpdated = false;
     
-
-        if ($item->category_id !== $validatedData['category_id']) {
-            $item->category_id = $validatedData['category_id'];
-            $isUpdated = true;
+        // Категория
+        if ($request->has('category_id')) {
+            $category_id = $request->input('category_id') !== '' ? $request->input('category_id') : null;
+            if ($item->category_id != $category_id) {
+                $item->category_id = $category_id;
+                $isUpdated = true;
+            }
         }
-
-        if ($item->article !== $validatedData['article']) {
-            $item->article = $validatedData['article'];
-            $isUpdated = true;
-        }
-
-        if ($item->brand !== $validatedData['brand']) {
-            $item->brand = $validatedData ['brand'];
-            $isUpdated = true;
-        }
-
-        if ($item->description !== $validatedData['description']) {
-            $item->description = $validatedData ['description'];
-            $isUpdated = true;
-        }
-
-        if ($item->detailed !== $validatedData['detailed']) {
-            $item->detailed = $validatedData ['detailed'];
-            $isUpdated = true;
-        }
-
-        if ($item->basetype !== $validatedData['basetype']) {
-            $item->basetype = $validatedData ['basetype'];
-            $isUpdated = true;
-        }
-
-        if ($item->power !== $validatedData['power']) {
-            $item->power = $validatedData['power'];
-            $isUpdated = true;
-        }
-
-        if ($item->madein !== $validatedData['madein']) {
-            $item->madein = $validatedData ['madein'];
-            $isUpdated = true;
-        }
-
-
-        
     
-        // Если изменений не было, возвращаем сообщение о том, что товар не изменился
+        // Тип
+        if ($request->has('type_id')) {
+            $type_id = $request->input('type_id') !== '' ? $request->input('type_id') : null;
+            if ($item->type_id != $type_id) {
+                $item->type_id = $type_id;
+                $isUpdated = true;
+            }
+        }
+    
+        if ($request->has('article') && $item->article !== $request->input('article')) {
+            $item->article = $request->input('article');
+            $isUpdated = true;
+        }
+    
+        if ($request->has('brand') && $item->brand !== $request->input('brand')) {
+            $item->brand = $request->input('brand');
+            $isUpdated = true;
+        }
+    
+        if ($request->has('description') && $item->description !== $request->input('description')) {
+            $item->description = $request->input('description');
+            $isUpdated = true;
+        }
+    
+        if ($request->has('detailed') && $item->detailed !== $request->input('detailed')) {
+            $item->detailed = $request->input('detailed');
+            $isUpdated = true;
+        }
+    
+        if ($request->has('basetype') && $item->basetype !== $request->input('basetype')) {
+            $item->basetype = $request->input('basetype');
+            $isUpdated = true;
+        }
+    
+        if ($request->has('power') && $item->power !== $request->input('power')) {
+            $item->power = $request->input('power');
+            $isUpdated = true;
+        }
+    
+        if ($request->has('madein') && $item->madein !== $request->input('madein')) {
+            $item->madein = $request->input('madein');
+            $isUpdated = true;
+        }
+    
         if (!$isUpdated) {
             return redirect()->route('websitegetItem')->with('info', 'Товар не изменился.');
         }
     
-        // Сохраняем изменения, если что-то было обновлено
         $item->save();
     
-        // Перенаправляем на страницу с товарами и показываем сообщение об успешном обновлении
         return redirect()->route('websitegetItem')->with('success', 'Товар успешно обновлен!');
     }
-
+    
 
     public function getTypes($categoryId)
     {

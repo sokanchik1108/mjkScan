@@ -164,7 +164,7 @@ class MainController extends Controller
     $validatedData = $request->validate([
         'product-name' => 'required|string|max:255',
         'quantity' => 'required|integer',
-        'purchase-price' => 'required|numeric',
+        'purchase-price' => 'required',
         'sale-price' => 'required|numeric',
     ]);
 
@@ -218,6 +218,7 @@ class MainController extends Controller
     // Перенаправляем на страницу с товарами и показываем сообщение об успешном обновлении
     return redirect()->route('getItem')->with('success', 'Товар успешно обновлен!');
 }
+
 
     
     
