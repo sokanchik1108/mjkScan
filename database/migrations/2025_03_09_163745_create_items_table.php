@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id('id');
             $table->string('product_name');
-            $table->string('quantity');
+            $table->unsignedInteger('quantity');
             $table->string('purchase_price');
-            $table->string('sale_price');
+            $table->decimal('sale_price', 10, 2);
             $table->string('img_path');
             $table->string('qrcode_path')->nullable();
             $table->string('article')->nullable();  // Если столбец может быть пустым

@@ -14,8 +14,14 @@
 
   <style>
 
+    .container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    }
 
-    footer {
+
+  footer {
   background: black;
   padding: 50px 50px;
   margin-top: auto;

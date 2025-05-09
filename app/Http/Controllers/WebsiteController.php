@@ -12,9 +12,116 @@ use Illuminate\Contracts\Support\ValidatedData;
 class WebsiteController extends Controller
 {
 
+    public function website(Request $request)
+    {
+        $query = $request->input('query');
+
+        if ($query) {
+            $items = Item::with(['category', 'type'])
+                ->where(function ($q) use ($query) {
+                    $q->where('product_name', 'LIKE', '%' . $query . '%')
+                        ->orWhere('description', 'LIKE', '%' . $query . '%')
+                        ->orWhere('article', 'LIKE', '%' . $query . '%')
+                        ->orWhere('brand', 'LIKE', '%' . $query . '%')
+                        ->orWhere('basetype', 'LIKE', '%' . $query . '%')
+                        ->orWhere('power', 'LIKE', '%' . $query . '%')
+                        ->orWhere('detailed', 'LIKE', '%' . $query . '%')
+                        ->orWhere('madein', 'LIKE', '%' . $query . '%');
+                })
+                ->orWhereHas('category', function ($q) use ($query) {
+                    $q->where('name', 'LIKE', '%' . $query . '%');
+                })
+                ->paginate(15)
+                ->appends(['query' => $query]);
+        } else {
+            $items = Item::with(['category', 'type'])->paginate(15);
+        }
+
+        return view('website', compact('items'));
+    }
 
 
 
+    public function websitegetItem(Request $request)
+    {
+        $items = Item::all();
+        return view('websitegetItem', ['items' => $items]);
+    }
+
+
+
+
+    public function updatewebsiteItem(Request $request, $id)
+    {
+        $item = Item::find($id);
+
+        if (!$item) {
+            return redirect()->route('websitegetItem')->with('error', 'Товар не найден');
+        }
+
+        $isUpdated = false;
+
+        // Категория
+        if ($request->has('category_id')) {
+            $category_id = $request->input('category_id') !== '' ? $request->input('category_id') : null;
+            if ($item->category_id != $category_id) {
+                $item->category_id = $category_id;
+                $isUpdated = true;
+            }
+        }
+
+        // Тип
+        if ($request->has('type_id')) {
+            $type_id = $request->input('type_id') !== '' ? $request->input('type_id') : null;
+            if ($item->type_id != $type_id) {
+                $item->type_id = $type_id;
+                $isUpdated = true;
+            }
+        }
+
+        if ($request->has('article') && $item->article !== $request->input('article')) {
+            $item->article = $request->input('article');
+            $isUpdated = true;
+        }
+
+        if ($request->has('brand') && $item->brand !== $request->input('brand')) {
+            $item->brand = $request->input('brand');
+            $isUpdated = true;
+        }
+
+        if ($request->has('description') && $item->description !== $request->input('description')) {
+            $item->description = $request->input('description');
+            $isUpdated = true;
+        }
+
+        if ($request->has('detailed') && $item->detailed !== $request->input('detailed')) {
+            $item->detailed = $request->input('detailed');
+            $isUpdated = true;
+        }
+
+        if ($request->has('basetype') && $item->basetype !== $request->input('basetype')) {
+            $item->basetype = $request->input('basetype');
+            $isUpdated = true;
+        }
+
+        if ($request->has('power') && $item->power !== $request->input('power')) {
+            $item->power = $request->input('power');
+            $isUpdated = true;
+        }
+
+        if ($request->has('madein') && $item->madein !== $request->input('madein')) {
+            $item->madein = $request->input('madein');
+            $isUpdated = true;
+        }
+
+        if (!$isUpdated) {
+            return redirect()->route('websitegetItem')->with('info', 'Товар не изменился.');
+        }
+
+        $item->save();
+
+        return redirect()->route('websitegetItem')->with('success', 'Товар успешно обновлен!');
+    }
 
 
     public function review_check(Request $request, $id)
@@ -38,31 +145,8 @@ class WebsiteController extends Controller
         $review->save();
 
         // Перенаправляем пользователя обратно на страницу товара с сообщением
-        return redirect()->route('productpage.show', ['id' => $id])->with('success', 'Отзыв отправлен!');
+        return redirect()->route('productpage.show', ['id' => $id])->with('review_success', 'Отзыв отправлен!');
     }
-
-
-
-
-
-
-
-
-    public function destroy($id)
-    {
-        // Находим товар по ID
-        $item = Item::find($id);
-
-        // Проверяем, существует ли товар
-        if ($item) {
-            // Удаляем товар
-            $item->delete();
-        }
-
-        // Перенаправляем на страницу с товарами
-        return redirect()->route('website')->with('success', 'Товар успешно удалён!');
-    }
-
 
 
     // Показываем страницу товара с отзывами
@@ -82,23 +166,6 @@ class WebsiteController extends Controller
         return view('productpage', compact('item'));
     }
 
-
-    public function website(Request $request)
-    {
-        $query = $request->input('query');
-
-        if ($query) {
-            $items = Item::where('product_name', 'LIKE', '%' . $query . '%')
-                ->orWhere('description', 'LIKE', '%' . $query . '%')
-                ->paginate(1)
-                ->appends(['query' => $query]);
-        } else {
-            $items = Item::with('category')->paginate(1);
-        }
-
-        $items = Item::with(['category', 'type'])->paginate(1);
-        return view('website', compact('items'));
-    }
 
 
     public function add(Request $request, $id)
@@ -161,96 +228,80 @@ class WebsiteController extends Controller
 
 
 
-    public function showItemsByCategory(Category $category)
+    public function showItemsByCategory(Category $category, Request $request)
     {
-        // Загружаем все товары, связанные с выбранной категорией
-        $items = $category->items()->paginate(1);
+        // Начинаем строить запрос для получения товаров по категории
+        $query = $category->items();
+
+        // Фильтрация по бренду
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        // Фильтрация по мощности
+        if ($request->filled('power')) {
+            $query->where('power', $request->power);
+        }
+
+        // Фильтрация по типу
+        if ($request->filled('type')) {
+            $query->where('type_id', $request->type);
+        }
+
+        if ($request->filled('madein')) {
+            $query->where('madein', $request->madein);
+        }
+
+        if ($request->filled('basetype')) {
+            $query->where('basetype', $request->basetype);
+        }
+
+        // Фильтрация по цене от
+        if ($request->filled('price_from')) {
+            $query->where('sale_price', '>=', $request->price_from);
+        }
+
+        // Фильтрация по цене до
+        if ($request->filled('price_to')) {
+            $query->where('sale_price', '<=', $request->price_to);
+        }
+
+        if ($request->boolean('in_stock')) {
+            $query->where('quantity', '>', 0);
+        }
+
+        switch ($request->input('sort')) {
+            case 'price_asc':
+                $query->orderBy('sale_price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('sale_price', 'desc');
+                break;
+            case 'quantity_asc':
+                $query->orderBy('quantity', 'asc');
+                break;
+            case 'quantity_desc':
+                $query->orderBy('quantity', 'desc');
+                break;
+
+            default:
+                $query->latest(); // по умолчанию: последние добавленные
+        }
+
+        // Пагинация результатов
+        $items = $query->paginate(15)->appends($request->all());
 
         $categories = Category::all();
 
         // Отправляем товары и категорию в Blade шаблон
-        return view('categories.items', compact('items', 'category','categories'));
-    }
-
-    public function websitegetItem(Request $request)
-    {
-        $items = Item::all();
-        return view('websitegetItem', ['items' => $items]);
+        return view('categories.items', compact('items', 'category', 'categories'));
     }
 
 
-    public function updatewebsiteItem(Request $request, $id)
-    {
-        $item = Item::find($id);
-    
-        if (!$item) {
-            return redirect()->route('websitegetItem')->with('error', 'Товар не найден');
-        }
-    
-        $isUpdated = false;
-    
-        // Категория
-        if ($request->has('category_id')) {
-            $category_id = $request->input('category_id') !== '' ? $request->input('category_id') : null;
-            if ($item->category_id != $category_id) {
-                $item->category_id = $category_id;
-                $isUpdated = true;
-            }
-        }
-    
-        // Тип
-        if ($request->has('type_id')) {
-            $type_id = $request->input('type_id') !== '' ? $request->input('type_id') : null;
-            if ($item->type_id != $type_id) {
-                $item->type_id = $type_id;
-                $isUpdated = true;
-            }
-        }
-    
-        if ($request->has('article') && $item->article !== $request->input('article')) {
-            $item->article = $request->input('article');
-            $isUpdated = true;
-        }
-    
-        if ($request->has('brand') && $item->brand !== $request->input('brand')) {
-            $item->brand = $request->input('brand');
-            $isUpdated = true;
-        }
-    
-        if ($request->has('description') && $item->description !== $request->input('description')) {
-            $item->description = $request->input('description');
-            $isUpdated = true;
-        }
-    
-        if ($request->has('detailed') && $item->detailed !== $request->input('detailed')) {
-            $item->detailed = $request->input('detailed');
-            $isUpdated = true;
-        }
-    
-        if ($request->has('basetype') && $item->basetype !== $request->input('basetype')) {
-            $item->basetype = $request->input('basetype');
-            $isUpdated = true;
-        }
-    
-        if ($request->has('power') && $item->power !== $request->input('power')) {
-            $item->power = $request->input('power');
-            $isUpdated = true;
-        }
-    
-        if ($request->has('madein') && $item->madein !== $request->input('madein')) {
-            $item->madein = $request->input('madein');
-            $isUpdated = true;
-        }
-    
-        if (!$isUpdated) {
-            return redirect()->route('websitegetItem')->with('info', 'Товар не изменился.');
-        }
-    
-        $item->save();
-    
-        return redirect()->route('websitegetItem')->with('success', 'Товар успешно обновлен!');
-    }
-    
+
+
+
+
 
     public function getTypes($categoryId)
     {
@@ -258,17 +309,51 @@ class WebsiteController extends Controller
         return response()->json($types);
     }
 
-    public function show($categoryId, $typeId)
+
+
+
+
+    public function show($categoryId, $typeId, Request $request)
     {
+
         $category = Category::findOrFail($categoryId);
         $type = $category->types()->findOrFail($typeId);
-        $items = $type->items()->paginate(1);
-    
+
+        // Строим запрос с фильтрами
+        $query = $type->items();
+
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        if ($request->filled('power')) {
+            $query->where('power', $request->power);
+        }
+
+        if ($request->filled('madein')) {
+            $query->where('madein', $request->madein);
+        }
+
+        if ($request->filled('basetype')) {
+            $query->where('basetype', $request->basetype);
+        }
+
+        if ($request->filled('price_from')) {
+            $query->where('sale_price', '>=', $request->price_from);
+        }
+
+        if ($request->filled('price_to')) {
+            $query->where('sale_price', '<=', $request->price_to);
+        }
+
+        if ($request->boolean('in_stock')) {
+            $query->where('quantity', '>', 0);
+        }
+
+        // Пагинация с передачей фильтров
+        $items = $query->paginate(15)->appends($request->all());
+
+
         return view('types', compact('category', 'type', 'items'));
     }
-    
-
-
-
-
 }

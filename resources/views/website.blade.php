@@ -11,3 +11,4 @@
 @section('pagination')
   @include('partials.pagination-wrapper')
 @endsection
+
