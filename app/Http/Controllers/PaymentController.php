@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Payment; // Импортируем модель для работы с базой данных
-use Illuminate\Support\Facades\Http; // Для HTTP-запросов к Kaspi API
+use App\Models\Payment;
+use Illuminate\Support\Facades\Http;
 
 class PaymentController extends Controller
 {
@@ -20,7 +20,7 @@ class PaymentController extends Controller
             'name.required' => 'Пожалуйста, введите ваше имя.',
             'name.regex' => 'Имя должно содержать только буквы и пробелы.',
             'name.max' => 'Имя не должно превышать 255 символов.',
-        
+            
             'phone.required' => 'Пожалуйста, введите номер телефона.',
             'phone.regex' => 'Введите корректный номер телефона.',
         
@@ -36,10 +36,13 @@ class PaymentController extends Controller
         $payment->phone = $request->phone;
         $payment->address = $request->address;
         $payment->card_number = $request->card;
+
+        // Получаем корзину из сессии
+        $cart = session()->get('cart', []);
+        $payment->cart = json_encode($cart);  // Сохраняем корзину как JSON строку
         $payment->save();
 
         // Рассчитываем общую сумму корзины
-        $cart = session()->get('cart', []);
         $total = 0;
         foreach ($cart as $item) {
             $total += $item['price'] * $item['quantity'];
@@ -60,16 +63,51 @@ class PaymentController extends Controller
             'description' => 'Оплата за товары',
             'currency' => 'KZT'
         ]);
-        
-        
 
+        // Обработка ответа от Kaspi API
         if ($response->successful()) {
-            // Если счет отправлен успешно
+            // Если счет отправлен успешно, очищаем корзину в сессии
+            session()->forget('cart');  // Удаляем данные корзины из сессии
+
             return redirect()->route('payment')->with('success', 'Оплата прошла успешно! Счет отправлен на телефон ' . $request->card);
         } else {
             // Если возникла ошибка при отправке счета
             return redirect()->route('payment')->with('error', 'Ошибка при отправке счета: ' . $response->body());
         }
     }
+
+    public function adminOrders()
+    {
+        // Получаем все заказы из базы данных
+        $payments = Payment::orderBy('created_at', 'desc')->get();
+
+        // Возвращаем данные в представление
+        return view('admin.orders', compact('payments'));
+    }
+
+    public function updateStatuses(Request $request, $id)
+{
+    $request->validate([
+        'payment_status' => 'required|string|in:оплачен,не оплачен',
+        'delivery_status' => 'required|string|in:доставлен,не доставлен',
+    ]);
+
+    $payment = Payment::findOrFail($id);
+    $payment->payment_status = $request->payment_status;
+    $payment->delivery_status = $request->delivery_status;
+    $payment->save();
+
+    return back()->with('success', 'Статусы успешно обновлены.');
 }
+
+public function destroy($id)
+{
+    $payment = Payment::findOrFail($id);
+    $payment->delete();
+
+    return back()->with('success', 'Заказ успешно удалён.');
+}
+
+}
+
 

@@ -117,7 +117,7 @@ class MainController extends Controller
     public function getItem(Request $request)
     {
         $items = Item::all();
-        return view('getItem', ['items' => $items]);
+        return view('getItems.getItem', ['items' => $items]);
     }
 
     // Метод для отображения всех товаров на странице продукта

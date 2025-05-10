@@ -45,7 +45,7 @@ class WebsiteController extends Controller
     public function websitegetItem(Request $request)
     {
         $items = Item::all();
-        return view('websitegetItem', ['items' => $items]);
+        return view('getItems.websitegetItem', ['items' => $items]);
     }
 
 
@@ -354,6 +354,6 @@ class WebsiteController extends Controller
         $items = $query->paginate(15)->appends($request->all());
 
 
-        return view('types', compact('category', 'type', 'items'));
+        return view('categories.types', compact('category', 'type', 'items'));
     }
 }

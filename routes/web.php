@@ -19,12 +19,6 @@ Route::get('/payment', function () {
 })->name('payment');
 
 
-
-Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
-
-
-
-
 Route::get('/', [MainController::class, 'welcome'])->name('welcome');
 
 Route::post('/formcheck', [MainController::class, 'form_check']);
@@ -71,6 +65,20 @@ Route::get('/categories/{id}/types', [WebsiteController::class, 'getTypes']);
 
 // Для показа товаров определённого типа в категории
 Route::get('categories/{categoryId}/types/{typeId}', [WebsiteController::class, 'show'])->name('types.show');
+
+Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
+
+
+ Route::get('/admin/orders', [PaymentController::class, 'adminOrders'])->name('admin.orders');
+
+ Route::post('/admin/orders/{id}/update-status', [PaymentController::class, 'updateStatuses'])->name('orders.updateStatuses');
+
+ Route::delete('/admin/orders/{id}', [PaymentController::class, 'destroy'])->name('orders.destroy');
+
+
+
+
+
 
 
 
