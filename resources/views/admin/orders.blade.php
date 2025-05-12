@@ -18,11 +18,10 @@
                 <th>Товары</th>
                 <th>Имя</th>
                 <th>Телефон</th>
-                <th>Адрес</th>
-                <th>Номер карты</th>
                 <th>Дата</th>
                 <th>Общая сумма</th>
                 <th>Статусы</th>
+                <th>Действия</th> <!-- New column for actions -->
             </tr>
         </thead>
         <tbody>
@@ -49,12 +48,6 @@
                                 {{ $item['quantity'] }} x {{ number_format($item['price'], 0, '.', ' ') }} ₸
                             </div>
                         </li>
-                        <form action="{{ route('orders.destroy', $payment->id) }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот заказ?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger mt-2">Удалить</button>
-                        </form>
-
                         @endforeach
                     </ul>
                     @else
@@ -63,22 +56,16 @@
                 </td>
                 <td>{{ $payment->name }}</td>
                 <td>{{ $payment->phone }}</td>
-                <td>{{ $payment->address }}</td>
-                <td>{{ $payment->card_number }}</td>
                 <td>{{ $payment->created_at->setTimezone('Asia/Almaty')->format('d-m-Y H:i') }}</td>
                 <td><strong>{{ number_format($total, 0, '.', ' ') }} ₸</strong></td>
                 <td>
                     <form action="{{ route('orders.updateStatuses', $payment->id) }}" method="POST">
                         @csrf
                         <div class="d-flex flex-column gap-2">
-                            <select name="payment_status" class="form-select form-select-sm">
-                                <option value="не оплачен" {{ $payment->payment_status === 'не оплачен' ? 'selected' : '' }}>не оплачен</option>
-                                <option value="оплачен" {{ $payment->payment_status === 'оплачен' ? 'selected' : '' }}>оплачен</option>
-                            </select>
 
                             <select name="delivery_status" class="form-select form-select-sm">
-                                <option value="не доставлен" {{ $payment->delivery_status === 'не доставлен' ? 'selected' : '' }}>не доставлен</option>
-                                <option value="доставлен" {{ $payment->delivery_status === 'доставлен' ? 'selected' : '' }}>доставлен</option>
+                                <option value="Отдан" {{ $payment->delivery_status === 'Отдан' ? 'selected' : '' }}>Отдан</option>
+                                <option value="Не отдан" {{ $payment->delivery_status === 'Не отдан' ? 'selected' : '' }}>Не отдан</option>
                             </select>
 
                             <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
@@ -86,9 +73,18 @@
                     </form>
                 </td>
 
+                <!-- New column for the delete button -->
+                <td class="text-center">
+                    <form action="{{ route('orders.destroy', $payment->id) }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот заказ?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger">Удалить заказ</button>
+                    </form>
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+
 @endsection

@@ -124,6 +124,10 @@
 
 @include('partials.navbar')
 
+      <div class="text-center bg-light border rounded p-3 mb-4" style="font-size: 14px; color: #555;">
+        <strong>Важно:</strong> доставка временно недоступна. Забрать заказ можно в магазине по адресу: <strong>г. Алматы, Рыскулова / Розыбакиева, рынок Сауран, павильон #109. <em>Оплата производится при получении.</em></strong>
+    </div>
+
 <div class="container">
 
 @if (session('success'))
@@ -201,29 +205,14 @@
         @enderror
     </div>
 
-    <div class="form-group">
-        <label for="address">Адрес доставки:</label>
-        <textarea name="address" id="address" >{{ old('address') }}</textarea>
-        @error('address')
-            <div class="error" style="color: red;">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class="form-group">
-        <label for="card">Номер карты Kaspi:</label>
-        <input type="text" name="card" id="card" placeholder="+77071234567" value="{{ old('card') }}" >
-        @error('card')
-            <div class="error" style="color: red;">{{ $message }}</div>
-        @enderror
-    </div>
-
-
     <button type="submit">Оплатить</button>
 </form>
 
 
 
 </div>
+
+
 
 </body>
 </html>

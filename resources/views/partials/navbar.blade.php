@@ -61,13 +61,13 @@
 
       <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
         <li><a href="/website" class="nav-link px-2 text-black">Главная</a></li>
-        <li><a href="#" class="nav-link px-2 text-black">Про нас</a></li>
+        <li><a href="/information" class="nav-link px-2 text-black">Про заказ онлайн</a></li>
         <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color:black;">
                   Адресс
                 </a>
                 <ul class="dropdown-menu" style="width:350px;text-align:center">
-                  <li>Алмата, зеленый базар, контеинер №10.</li>
+                  <li>г. Алматы, Рыскулова розыбакиева рынок сауран #109</li>
                   <hr style="margin-top: 3px;margin-bottom:3px;">
                   <li>+7 747 289 41 61</li>
                 </ul>
@@ -75,14 +75,16 @@
       </ul>
 
       <form action="{{ route('website') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-    <input 
-        type="search" 
-        name="query" 
-        class="form-control form-control-dark text-bg-white text-dark" 
-        placeholder=" Поиск..." 
-        aria-label="Search" 
-        value="{{ request('query') }}"
-    >
+<input 
+    type="search" 
+    name="query" 
+    class="form-control form-control-dark text-bg-white text-dark" 
+    placeholder=" Поиск..." 
+    aria-label="Search" 
+    style="text-transform: capitalize;"
+    value="{{ request('query') }}"
+>
+
 </form>
 
       <div class="text-end">

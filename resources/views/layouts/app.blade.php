@@ -22,6 +22,12 @@
 <body class="d-flex flex-column min-vh-100">
   @include('partials.navbar')
 
+@if (!isset($hideLayoutBlock))
+      <div class="text-center bg-light border rounded p-3 mb-4" style="font-size: 14px; color: #555;">
+        <strong>Важно:</strong> доставка временно недоступна. Забрать заказ можно в магазине по адресу: <strong>г. Алматы, Рыскулова / Розыбакиева, рынок Сауран, павильон #109. <em>Оплата производится при получении.</em></strong>
+    </div>
+@endif
+
   <main class="flex-grow-1 d-flex flex-column">
     <div class="limited-width flex-grow-1 d-flex flex-column">
 

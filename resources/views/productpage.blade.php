@@ -20,13 +20,17 @@
 
                 <div class="price">
                     <h3>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</h3>
-                    <h5 style="font-size: 15px;color: #7b828a;" >В наличии: <span style="color:black">{{ $item->quantity }}шт.</span></h5>
+                    <h5 style="font-size: 15px;color: #7b828a;margin-top:10px">В наличии: <span style="color:black">{{ $item->quantity }}шт.</span></h5>
                 </div>
 
-                <form action="{{ route('cart.add', $item->id) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn cart-add">В корзину</button>
-                </form>
+                <div class="basket">
+                    <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
+                        @csrf
+                        <button type="submit" class="btn btn-warning">В корзину</button>
+                        <input type="number" name="quantity" value="1" min="1" class="form-control" style="max-width: 60px;" required>
+                    </form>
+                </div>
+
 
 
 
@@ -76,7 +80,6 @@
 
 
                     <div class="description" id="description">
-                        <h3>Характеристики</h3>
                         <p class="preserve-lines">{{ $item->detailed }}</p>
                     </div>
                     @endif
@@ -149,6 +152,9 @@
 
 
                     </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -156,29 +162,34 @@
 
     @if (session('success'))
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const modal = new bootstrap.Modal(document.getElementById('addToCartModal'));
             modal.show();
         });
     </script>
-    
+
     @include('partials.modal')
 
-@endif
- 
+    @endif
+
     <style>
-        .cart-add {
-            background-color: #FFC107;
+        .basket .btn {
             margin-bottom: 30px;
-            width: 30%;
+            width: 40%;
             margin-top: 20px;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
-        .cart-add:hover {
+        .basket .form-control {
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .basket .btn:hover {
             background-color: #FFC107;
             transform: scale(1.05);
         }
+
 
         .container {
             display: flex;
@@ -356,16 +367,88 @@
             margin-top: 40px;
         }
 
-
-
-        .reviews-cards {
-            max-width: 1050px;
+        .reviews-cards .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .reviews-cards .card bg-lightmb-3 .card-body .card-minuses {
-            margin-bottom: 20px;
-
+        .reviews-cards .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
+
+        .reviews-cards .card-body {
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+
+        .card-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-rating span {
+            font-size: 20px;
+            color: #FFD700;
+            /* Золотые звезды */
+        }
+
+        .card-pluses,
+        .card-minuses,
+        .x {
+            margin-bottom: 15px;
+        }
+
+        .card-pluses b,
+        .card-minuses b,
+        .x b {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .card-pluses span,
+        .card-minuses span,
+        .x span {
+            color: #666;
+        }
+
+        .card-pluses {
+            background-color: #f8f8f8;
+            border-left: 5px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .card-minuses {
+            background-color: #f8f8f8;
+            border-left: 5px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .x {
+            background-color: #f8f8f8;
+            border-left: 5px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .reviews-cards .card .card-body .x {
+            font-style: italic;
+            color: #444;
+        }
+
+        .reviews-cards .card .card-body .card-minuses {
+            font-size: 14px;
+        }
+
+
+
+
 
         .modal-body .stars {
             justify-content: center;
@@ -418,10 +501,10 @@
                 width: 100%;
                 height: auto;
             }
-            
-                    .block .col h4 {
-            width: 310px;
-        }
+
+            .block .col h4 {
+                width: 310px;
+            }
 
             .col {
                 max-width: 100%;
@@ -490,6 +573,24 @@
 
             .product-name h5 {
                 font-size: 1rem;
+            }
+
+            .reviews-cards .card {
+                margin: 10px 0;
+            }
+
+            .card-rating span {
+                font-size: 18px;
+            }
+
+            .card-pluses,
+            .card-minuses,
+            .x {
+                font-size: 14px;
+            }
+
+            .card-body {
+                padding: 15px;
             }
 
         }

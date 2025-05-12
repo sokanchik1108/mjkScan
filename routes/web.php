@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\WebsiteController;
 use App\Http\Controllers\PaymentController;
-use App\Models\Category;
 
 Route::get('/', function () {
     return view('welcome');
@@ -19,7 +18,9 @@ Route::get('/payment', function () {
 })->name('payment');
 
 
-
+Route::get('/information', function () {
+    return view('partials.information');
+})->name('information');
 
 Route::get('/', [MainController::class, 'welcome'])->name('welcome');
 

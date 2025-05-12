@@ -14,8 +14,6 @@ class PaymentController extends Controller
         $request->validate([
             'name' => ['required', 'regex:/^[\pL\s]+$/u', 'max:255'],
             'phone' => ['required', 'regex:/^[+]?[0-9]{1,4}(\s?[0-9]{1,4}){2,3}$/'],
-            'address' => ['required', 'string'],
-            'card' => ['required', 'regex:/^[+]?[0-9]{10,15}$/'],
         ], [
             'name.required' => 'Пожалуйста, введите ваше имя.',
             'name.regex' => 'Имя должно содержать только буквы и пробелы.',
@@ -23,19 +21,12 @@ class PaymentController extends Controller
             
             'phone.required' => 'Пожалуйста, введите номер телефона.',
             'phone.regex' => 'Введите корректный номер телефона.',
-        
-            'address.required' => 'Пожалуйста, укажите адрес доставки.',
-        
-            'card.required' => 'Пожалуйста, введите номер карты.',
-            'card.regex' => 'Пожалуйста, введите правильный номер карты.',
         ]);
 
         // Логика сохранения данных в базу данных
         $payment = new Payment();
         $payment->name = $request->name;
         $payment->phone = $request->phone;
-        $payment->address = $request->address;
-        $payment->card_number = $request->card;
 
         // Получаем корзину из сессии
         $cart = session()->get('cart', []);
@@ -69,7 +60,7 @@ class PaymentController extends Controller
             // Если счет отправлен успешно, очищаем корзину в сессии
             session()->forget('cart');  // Удаляем данные корзины из сессии
 
-            return redirect()->route('payment')->with('success', 'Оплата прошла успешно! Счет отправлен на телефон ' . $request->card);
+            return redirect()->route('payment')->with('success', 'Заказ оформлен,мы свяжимся с вами в ближайшее время' );
         } else {
             // Если возникла ошибка при отправке счета
             return redirect()->route('payment')->with('error', 'Ошибка при отправке счета: ' . $response->body());
@@ -88,12 +79,10 @@ class PaymentController extends Controller
     public function updateStatuses(Request $request, $id)
 {
     $request->validate([
-        'payment_status' => 'required|string|in:оплачен,не оплачен',
-        'delivery_status' => 'required|string|in:доставлен,не доставлен',
+        'delivery_status' => 'required|string|in:Отдан,Не отдан',
     ]);
 
     $payment = Payment::findOrFail($id);
-    $payment->payment_status = $request->payment_status;
     $payment->delivery_status = $request->delivery_status;
     $payment->save();
 

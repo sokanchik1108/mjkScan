@@ -65,7 +65,17 @@
             font-weight: 500;
         }
 
+        .card-body a {
+            text-decoration: none;
+            color: black;
+            font-size: large;
+            font-weight: 600;
+        }
 
+        .card-body a:hover{
+            text-decoration: underline;
+            color:#0d6efd;
+        }
 
 
         /* Стили для сообщений "Товар не найден" */
@@ -83,16 +93,18 @@
         <div class="card" style="width: 25rem;margin:20px;border-radius: 8px;">
             <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="img" id="preview-img-{{ $item->id }}">
             <div class="card-body" style="background-color: #f1f1f1;">
-                <h4 class="card-title"> {{ $item->product_name }}</h4>
+                <h5 class="card-title"> {{ $item->product_name }}</h5>
                 
-                <h5 class="card-text">Количество: <b>{{ $item->quantity }}</b></h5>
+                <h5 class="card-text">В наличии: <b>{{ $item->quantity }}</b></h5>
                 
-                <h5 class="card-text">Цена продажи: <b>{{ $item->sale_price }}</b></h5>
+                <h5 class="card-text">Цена продажи: <b>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</b></h5>
+
+                <a href="{{ route('productpage.show', ['id' => $item->id]) }}">Подробнее о товаре</a>
 
                 <!-- Показываем дополнительную информацию, если параметр 'id' в URL равен 'mjkHash12321321' -->
                 @if(request()->get('id') == 'mjkHash')
                 <div class="additional-info">
-                    <h5 class="card-text">Цена прихода: <b>{{ $item->purchase_price }}</b></h5>
+                    <h5 class="card-text">Цена прихода: <b>{{ number_format($item->purchase_price, 0, '.', '.') }}</b></h5>
                     <h5 class="card-text">Артикул: <b>{{ $item->article }}</b></h5>
                                     <!-- Форма для изменения количества товара -->
                 <form action="{{ route('update_quantity', $item->id) }}" method="POST">
@@ -120,6 +132,7 @@
         <p>Товар не найден.</p>
         @endif
     </div>
+
 
     <script>
         // Показываем дополнительную информацию, если параметр id равен 'mjkHash12321321'
