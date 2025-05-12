@@ -21,7 +21,7 @@
 
           <div class="product-footer mt-auto">
             <p class="card-price">{{ number_format($item->sale_price, 0, '.', '.') }} ₸</p>
-            <p class="card-text">Остаток: {{ $item->quantity }}</p>
+            <p class="card-text">В наличии: {{ $item->quantity }}шт.</p>
             <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
               @csrf
               <button type="submit" class="btn btn-warning w-100">В корзину</button>

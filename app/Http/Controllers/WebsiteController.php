@@ -12,41 +12,60 @@ use Illuminate\Contracts\Support\ValidatedData;
 class WebsiteController extends Controller
 {
 
-    public function website(Request $request)
-    {
-        $query = $request->input('query');
+public function website(Request $request)
+{
+    // Преобразуем первую букву запроса в заглавную
+    $query = $request->input('query');
+    if ($query) {
+        $query = ucfirst($query); // Первая буква заглавная
 
-        if ($query) {
-            $items = Item::with(['category', 'type'])
-                ->where(function ($q) use ($query) {
-                    $q->where('product_name', 'LIKE', '%' . $query . '%')
-                        ->orWhere('description', 'LIKE', '%' . $query . '%')
-                        ->orWhere('article', 'LIKE', '%' . $query . '%')
-                        ->orWhere('brand', 'LIKE', '%' . $query . '%')
-                        ->orWhere('basetype', 'LIKE', '%' . $query . '%')
-                        ->orWhere('power', 'LIKE', '%' . $query . '%')
-                        ->orWhere('detailed', 'LIKE', '%' . $query . '%')
-                        ->orWhere('madein', 'LIKE', '%' . $query . '%');
-                })
-                ->orWhereHas('category', function ($q) use ($query) {
-                    $q->where('name', 'LIKE', '%' . $query . '%');
-                })
-                ->paginate(15)
-                ->appends(['query' => $query]);
-        } else {
-            $items = Item::with(['category', 'type'])->paginate(15);
-        }
-
-        return view('website', compact('items'));
+        $items = Item::with(['category', 'type'])
+            ->where(function ($q) use ($query) {
+                $q->where('product_name', 'LIKE', '%' . $query . '%')
+                    ->orWhere('description', 'LIKE', '%' . $query . '%')
+                    ->orWhere('article', 'LIKE', '%' . $query . '%')
+                    ->orWhere('brand', 'LIKE', '%' . $query . '%')
+                    ->orWhere('basetype', 'LIKE', '%' . $query . '%')
+                    ->orWhere('power', 'LIKE', '%' . $query . '%')
+                    ->orWhere('detailed', 'LIKE', '%' . $query . '%')
+                    ->orWhere('madein', 'LIKE', '%' . $query . '%');
+            })
+            ->orWhereHas('category', function ($q) use ($query) {
+                $q->where('name', 'LIKE', '%' . $query . '%');
+            })
+            ->orWhereHas('type', function ($q) use ($query) {
+                $q->where('name', 'LIKE', '%' . $query . '%');
+            })
+            ->paginate(15)
+            ->appends(['query' => $query]);
+    } else {
+        $items = Item::with(['category', 'type'])->paginate(15);
     }
+
+    return view('website', compact('items'));
+}
+
+
 
 
 
     public function websitegetItem(Request $request)
     {
-        $items = Item::all();
+        $query = Item::query();
+        $search = $request->input('search');
+
+        if ($search) {
+            // Сначала ищем по артикулу
+            $query->where('article', 'like', '%' . $search . '%')
+                ->orWhere('product_name', 'like', '%' . $search . '%');
+        }
+
+        $items = $query->get();
+
         return view('getItems.websitegetItem', ['items' => $items]);
     }
+
+    
 
 
 
@@ -193,7 +212,13 @@ class WebsiteController extends Controller
         $cart[] = $product;
         session()->put('cart', $cart);
 
-        return redirect()->back()->with('success', 'Товар добавлен!', compact('item', 'cart'))->with('item', $item);
+        return redirect()->back()->with('success', 'Товар добавлен!')->with('item', [
+        'product_name' => $item->product_name,
+        'sale_price' => (float)$item->sale_price,
+        'article' => $item->article,
+        'img_path' => $item->img_path,
+        'quantity' => (int) $request->quantity,
+    ]);
     }
 
     public function index()

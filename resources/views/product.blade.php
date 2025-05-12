@@ -90,10 +90,27 @@
                 <h5 class="card-text">Цена продажи: <b>{{ $item->sale_price }}</b></h5>
 
                 <!-- Показываем дополнительную информацию, если параметр 'id' в URL равен 'mjkHash12321321' -->
-                @if(request()->get('id') == 'mjkHash12321321')
+                @if(request()->get('id') == 'mjkHash')
                 <div class="additional-info">
                     <h5 class="card-text">Цена прихода: <b>{{ $item->purchase_price }}</b></h5>
-                    <h5 class="card-text">id: <b>{{ $item->id }}</b></h5>
+                    <h5 class="card-text">Артикул: <b>{{ $item->article }}</b></h5>
+                                    <!-- Форма для изменения количества товара -->
+                <form action="{{ route('update_quantity', $item->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Изменить количество:</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" value="{{ old('quantity', $item->quantity) }}" min="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Обновить количество</button>
+                </form>
+
+                <!-- Показываем сообщение об успехе -->
+                @if(session('success'))
+                <div class="alert alert-success mt-3">
+                    {{ session('success') }}
+                </div>
+                @endif
                 </div>
                 @endif
 

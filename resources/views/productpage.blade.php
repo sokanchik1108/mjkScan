@@ -20,6 +20,7 @@
 
                 <div class="price">
                     <h3>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</h3>
+                    <h5 style="font-size: 15px;color: #7b828a;" >В наличии: <span style="color:black">{{ $item->quantity }}шт.</span></h5>
                 </div>
 
                 <form action="{{ route('cart.add', $item->id) }}" method="POST">
@@ -164,8 +165,7 @@
     @include('partials.modal')
 
 @endif
-
-
+ 
     <style>
         .cart-add {
             background-color: #FFC107;
@@ -418,6 +418,10 @@
                 width: 100%;
                 height: auto;
             }
+            
+                    .block .col h4 {
+            width: 310px;
+        }
 
             .col {
                 max-width: 100%;

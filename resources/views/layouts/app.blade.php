@@ -24,9 +24,6 @@
 
   <main class="flex-grow-1 d-flex flex-column">
     <div class="limited-width flex-grow-1 d-flex flex-column">
-      @hasSection('page-title')
-        <div class="title"><h1>@yield('page-title')</h1></div>
-      @endif
 
       {{-- Контент --}}
       @yield('content')

@@ -19,6 +19,8 @@ Route::get('/payment', function () {
 })->name('payment');
 
 
+
+
 Route::get('/', [MainController::class, 'welcome'])->name('welcome');
 
 Route::post('/formcheck', [MainController::class, 'form_check']);
@@ -36,6 +38,11 @@ Route::get('/scan', [MainController::class, 'scanQr'])->name('scanQr');  // Ст
 Route::get('/product/{id}', [MainController::class, 'viewProduct'])->name('viewProduct');  // Страница для товара по ID
 
 Route::get('/product/{id}', [MainController::class, 'show'])->name('product.show');
+
+
+
+Route::put('/product/{id}/update', [MainController::class, 'updateQuantity'])->name('update_quantity');
+
 
 Route::get("/website", [WebsiteController::class, 'website'])->name('website');
 

@@ -97,8 +97,27 @@
     </div>
     @endif
 
+    <div class="container" style="max-width: 600px; margin-top: 30px;">
+        <form method="GET" action="{{ route('websitegetItem') }}" class="row g-3">
+            <div class="col-12">
+                <input type="text" name="search" class="form-control" placeholder="Введите имя или артикул"
+                    value="{{ request('search') }}">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary w-100">Поиск</button>
+            </div>
+        </form>
+        <!-- Кнопка назад -->
+        <a href="{{ route('websitegetItem') }}" class="btn btn-secondary w-50" style="margin-top: 15px;">Назад</a>
+    </div>
+
     <div class="row">
         <div class="container">
+            @if($items->isEmpty())
+            <div class="alert alert-warning text-center w-100">
+                Ничего не найдено.
+            </div>
+            @else
             @foreach($items as $item)
             <div class="card" style="width: 18rem;margin:20px;border-radius: 8px;">
                 <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="img" id="preview-img-{{ $item->id }}">
@@ -246,6 +265,7 @@
                 </div>
             </div>
             @endforeach
+            @endif
         </div>
     </div>
 

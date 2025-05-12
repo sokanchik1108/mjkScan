@@ -1,7 +1,7 @@
 <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="addToCartModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered custom-modal-sm"> <!-- Кастомный размер -->
         <div class="modal-content text-center">
-            <div class="modal-header text-white" >
+            <div class="modal-header text-white">
                 <h5 class="modal-title w-100" id="addToCartModalLabel" style="color: green;">Товар добавлен в корзину</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
@@ -11,9 +11,22 @@
                 <img src="{{ asset('storage/' . session('item.img_path')) }}" class="img-fluid mb-3" alt="Товар">
 
                 <div class="text-start">
-                    <h5 class="mb-1">{{ session('item.sale_price') }}₸</h5>
+                    @php
+                    $price = session('item.sale_price');
+                    $quantity = session('item.quantity', 1);
+                    $total = $price * $quantity;
+                    @endphp
+
+                    <h5 class="mb-1">
+                        Итого: {{ $total }}₸
+                        <small class="text-muted" style="font-size: 0.85rem;">
+                            ({{ $price }}₸ × {{ $quantity }} шт.)
+                        </small>
+                    </h5>
+
                     <p class="mb-0"><strong>Артикул:</strong> {{ session('item.article') }}</p>
                 </div>
+
             </div>
             <div class="modal-footer justify-content-center">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" style="width:120px;background-color:#FFC107;border-color:#FFC107">Продолжить покупки</button>
@@ -68,7 +81,8 @@
             font-size: 0.95rem;
         }
 
-        .modal-body h5, .modal-body p {
+        .modal-body h5,
+        .modal-body p {
             font-size: 0.85rem;
         }
 

@@ -59,8 +59,8 @@
                 var urlParams = new URLSearchParams(window.location.search);
 
                 // Если параметр 'id' уже есть в URL, добавляем его при переходе
-                if (urlParams.has('id') && urlParams.get('id') === 'mjkHash12321321') {
-                    window.location.href = '/product/' + productId + '?id=mjkHash12321321';  // Переходим с параметром id=mjkHash12321321
+                if (urlParams.has('id') && urlParams.get('id') === 'mjkHash') {
+                    window.location.href = '/product/' + productId + '?id=mjkHash';  // Переходим с параметром id=mjkHash12321321
                 } else {
                     window.location.href = '/product/' + productId;  // Переходим без параметра id
                 }
