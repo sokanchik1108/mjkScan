@@ -13,11 +13,8 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone');
-            $table->text('address');
-            $table->string('card_number');
             $table->text('cart');
-            $table->string('payment_status')->default('не оплачен');
-            $table->string('delivery_status')->default('не доставлен');
+            $table->string('delivery_status')->default('не отдан');
             $table->timestamps();
         });
     }
