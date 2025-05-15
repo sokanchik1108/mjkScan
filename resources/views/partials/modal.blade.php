@@ -8,13 +8,22 @@
             <div class="modal-body">
                 <h6 class="mb-2"><strong>{{ session('item.product_name') }}</strong></h6>
 
-                <img src="{{ asset('storage/' . session('item.img_path')) }}" class="img-fluid mb-3" alt="Товар">
+                @php
+                    // Разбиваем строку с путями и получаем первое изображение
+                    $imagePaths = explode(',', session('item.img_path'));
+                    $firstImagePath = $imagePaths[0] ?? null;
+                @endphp
+
+                <!-- Выводим только первое изображение -->
+                @if ($firstImagePath)
+                    <img src="{{ asset('storage/' . $firstImagePath) }}" class="img-fluid mb-3" alt="Товар">
+                @endif
 
                 <div class="text-start">
                     @php
-                    $price = session('item.sale_price');
-                    $quantity = session('item.quantity', 1);
-                    $total = $price * $quantity;
+                        $price = session('item.sale_price');
+                        $quantity = session('item.quantity', 1);
+                        $total = $price * $quantity;
                     @endphp
 
                     <h5 class="mb-1">
@@ -35,6 +44,7 @@
         </div>
     </div>
 </div>
+
 
 <style>
     /* Кастомная модалка меньшего размера */

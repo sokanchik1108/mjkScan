@@ -72,9 +72,9 @@
             font-weight: 600;
         }
 
-        .card-body a:hover{
+        .card-body a:hover {
             text-decoration: underline;
-            color:#0d6efd;
+            color: #0d6efd;
         }
 
 
@@ -85,18 +85,35 @@
             color: #d9534f;
             margin-top: 20px;
         }
+
+
     </style>
 
     <h1 style="text-align: center;">Детали товара</h1>
     <div class="container">
         @if($item)
         <div class="card" style="width: 25rem;margin:20px;border-radius: 8px;">
-            <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="img" id="preview-img-{{ $item->id }}">
+                <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @php
+                        $images = explode(',', $item->img_path);
+                        @endphp
+                        @foreach($images as $index => $image)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
+                        </div>
+                        @endforeach
+                    </div>
+
+                    @if(count($images) > 1)
+@include('partials.carousel')
+                    @endif
+                </div>
             <div class="card-body" style="background-color: #f1f1f1;">
                 <h5 class="card-title"> {{ $item->product_name }}</h5>
-                
+
                 <h5 class="card-text">В наличии: <b>{{ $item->quantity }}</b></h5>
-                
+
                 <h5 class="card-text">Цена продажи: <b>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</b></h5>
 
                 <a href="{{ route('productpage.show', ['id' => $item->id]) }}">Подробнее о товаре</a>
@@ -106,23 +123,23 @@
                 <div class="additional-info">
                     <h5 class="card-text">Цена прихода: <b>{{ number_format($item->purchase_price, 0, '.', '.') }}</b></h5>
                     <h5 class="card-text">Артикул: <b>{{ $item->article }}</b></h5>
-                                    <!-- Форма для изменения количества товара -->
-                <form action="{{ route('update_quantity', $item->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Изменить количество:</label>
-                        <input type="number" name="quantity" id="quantity" class="form-control" value="{{ old('quantity', $item->quantity) }}" min="1" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Обновить количество</button>
-                </form>
+                    <!-- Форма для изменения количества товара -->
+                    <form action="{{ route('update_quantity', $item->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Изменить количество:</label>
+                            <input type="number" name="quantity" id="quantity" class="form-control" value="{{ old('quantity', $item->quantity) }}" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Обновить количество</button>
+                    </form>
 
-                <!-- Показываем сообщение об успехе -->
-                @if(session('success'))
-                <div class="alert alert-success mt-3">
-                    {{ session('success') }}
-                </div>
-                @endif
+                    <!-- Показываем сообщение об успехе -->
+                    @if(session('success'))
+                    <div class="alert alert-success mt-3">
+                        {{ session('success') }}
+                    </div>
+                    @endif
                 </div>
                 @endif
 

@@ -57,13 +57,20 @@ class WebsiteController extends Controller
                 break;
         }
 
+        // Получаем все товары с пагинацией
         $items = $itemsQuery->paginate(15)->appends([
             'query' => $query,
             'sort' => $sort,
         ]);
 
-        return view('website', compact('items')); // Замените 'your-view-name'
+        // Разбиваем пути к изображениям для каждого товара
+        foreach ($items as $item) {
+            $item->imagePaths = explode(',', $item->img_path);
+        }
+
+        return view('website', compact('items')); // Передаем товары и их изображения в представление
     }
+
 
 
 
@@ -94,6 +101,9 @@ class WebsiteController extends Controller
         return redirect()->route('productpage.show', ['id' => $id])->with('review_success', 'Отзыв отправлен!');
     }
 
+
+
+
     // Показываем страницу товара с отзывами
     public function showProductpage($id)
     {
@@ -117,24 +127,25 @@ class WebsiteController extends Controller
     {
         $cart = session()->get('cart', []);
 
-        // Получаем товар из базы данных
         $item = Item::find($id);
 
-        // Проверяем, найден ли товар
         if (!$item) {
             return redirect()->back()->with('error', 'Товар не найден!');
         }
 
+        // Разделяем img_path и берём только первое изображение
 
-        // Подготовка данных о товаре для добавления в корзину
+        $imgPaths = explode(',', $item->img_path);
+        $firstImage = trim($imgPaths[0] ?? '');
+
+        // Подготовка данных о товаре для корзины
         $product = [
             'name' => $item->product_name,
             'price' => (float)$item->sale_price,
-            'quantity' => (int) $request->quantity,
-            'image' => asset('storage/' . $item->img_path),
+            'quantity' => (int)$request->quantity,
+            'image' => asset('storage/' . $firstImage),
         ];
 
-        // Добавляем товар в корзину
         $cart[] = $product;
         session()->put('cart', $cart);
 
@@ -142,10 +153,11 @@ class WebsiteController extends Controller
             'product_name' => $item->product_name,
             'sale_price' => (float)$item->sale_price,
             'article' => $item->article,
-            'img_path' => $item->img_path,
-            'quantity' => (int) $request->quantity,
+            'img_path' => $firstImage,
+            'quantity' => (int)$request->quantity,
         ]);
     }
+
 
     public function index()
     {

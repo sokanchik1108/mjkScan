@@ -235,7 +235,11 @@
                             <div class="col custom-col-5 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card">
                                     <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
-                                        <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="Товар" id="preview-img-{{ $item->id }}">
+                                        @php
+                                        $images = explode(',', $item->img_path);
+                                        $firstImage = trim($images[0]);
+                                        @endphp
+                                        <img src="{{ asset('storage/' . $firstImage) }}" class="card-img-top" alt="Товар" id="preview-img-{{ $item->id }}">
                                     </a>
                                     <div class="card-body d-flex flex-column">
                                         <div class="product-info mb-3">
@@ -431,6 +435,10 @@
 
             </div>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

@@ -102,10 +102,10 @@
         <form id="product-form" action="/formcheck" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
             @csrf
 
-            <!-- Загрузка изображения товара -->
+            <!-- Загрузка изображений -->
             <div class="form-group">
-                <label for="product-image">Загрузить изображение</label>
-                <input type="file" id="product_image" name="product-image" accept="image/*" onchange="previewImage(event)" required>
+                <label for="product-image">Загрузить изображения</label>
+                <input type="file" id="product-image" name="images[]" multiple accept="image/*" onchange="previewImages(event)" required>
             </div>
 
             <div class="form-group">
@@ -126,7 +126,6 @@
                     <option value="" disabled selected>Выберите тип</option>
                 </select>
             </div>
-
 
             <!-- Название товара -->
             <div class="form-group">
@@ -186,8 +185,6 @@
                 <textarea id="detailed" name="detailed" rows="4" style="width: 95%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;height:200px"></textarea>
             </div>
 
-
-
             <!-- Кнопка сохранения -->
             <div class="form-group">
                 <button type="submit">Сохранить</button>
@@ -196,50 +193,42 @@
     </div>
 
     <script>
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function() {
-                var output = document.createElement('img');
-                output.src = reader.result;
-                var previewContainer = document.getElementById('image-preview');
-                previewContainer.innerHTML = ''; // Очистить предыдущие изображения
-                previewContainer.appendChild(output); // Добавить новое изображение
-            }
-            reader.readAsDataURL(event.target.files[0]); // Чтение файла изображения
+        function previewImages(event) {
+            const files = event.target.files;
+            const previewContainer = document.getElementById('image-preview');
+            previewContainer.innerHTML = ''; // Очищаем старые превью
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.margin = '10px';
+                    img.style.maxWidth = '120px';
+                    img.style.borderRadius = '6px';
+                    previewContainer.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
         }
 
         function handleFormSubmit(event) {
-
-            //event.preventDefault();  // Отменяем стандартное поведение отправки формы 
-
-            // Получаем поля формы
-            var productName = document.getElementById('product-name').value;
-            // var productName = $("#product-name").val();
-            var quantity = document.getElementById('quantity').value;
-            var purchasePrice = document.getElementById('purchase-price').value;
-            var salePrice = document.getElementById('sale-price').value;
-            var productImage = document.getElementById('product-image').files[0]; // Получаем выбранное изображение
+            const productImages = document.getElementById('product-image').files;
+            const errorMessage = document.getElementById('error-message');
 
             // Проверка на пустое изображение
-            var errorMessage = document.getElementById('error-message');
-            if (!productImage) {
-                errorMessage.style.display = 'block'; // Показываем ошибку
-                return false; // Не отправляем форму, если изображение не выбрано
-            } else {
-                errorMessage.style.display = 'none'; // Скрываем ошибку, если изображение выбрано
+            if (productImages.length === 0) {
+                errorMessage.style.display = 'block';
+                return false; // Блокируем отправку формы
             }
 
-            // Создаем объект для вывода данных в консоль
-            var productData = {
-                name: productName,
-                quantity: quantity,
-                purchasePrice: purchasePrice,
-                salePrice: salePrice,
-                image: productImage ? productImage.name : 'Не выбрано'
-            };
+            if (productImages.length > 5) {
+                alert("Можно загрузить не более 5 изображений.");
+                return false;
+            }
 
-            // Выводим данные в консоль
-            console.log('Данные товара:', productData);
+            errorMessage.style.display = 'none';
+            return true; // Разрешаем отправку формы
         }
 
         document.getElementById('category_id').addEventListener('change', function() {

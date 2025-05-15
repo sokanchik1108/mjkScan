@@ -9,7 +9,28 @@
         <div class="row">
             <div class="col">
                 <div>
-                    <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
+                    <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @php
+                            $images = explode(',', $item->img_path);
+                            @endphp
+                            @foreach($images as $index => $image)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
+                            </div>
+                            @endforeach
+                        </div>
+
+                        @if(count($images) > 1)
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="prev">
+                            <i class="fas fa-chevron-left fa-lg text-dark"></i> <!-- Уменьшенный размер стрелки -->
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="next">
+                            <i class="fas fa-chevron-right fa-lg text-dark"></i> <!-- Уменьшенный размер стрелки -->
+                        </button>
+
+                        @endif
+                    </div>
                 </div>
             </div>
 
@@ -106,7 +127,11 @@
             <div class="w-100"></div>
             <div class="reviews" style="margin-top: 20px;">
                 <div class="img-reviews">
-                    <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
+                    @php
+                    $images = explode(',', $item->img_path);
+                    $firstImage = trim($images[0]);
+                    @endphp
+                    <img src="{{ asset('storage/' . $firstImage) }}" class="card-img-top" alt="Товар">
                     <h6>{{ $item->product_name }}</h6>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">Написать отзыв</button>
 
@@ -172,7 +197,19 @@
 
     @endif
 
+
+
+
     <style>
+        .carousel-control-prev,
+        .carousel-control-next {
+            bottom: 55px;
+            top: auto;
+            width: auto;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
         .basket .btn {
             margin-bottom: 30px;
             width: 40%;
@@ -207,13 +244,14 @@
             max-width: 1200px;
         }
 
-        .block .col img {
-            max-width: 500px;
-            height: auto;
+
+        .carousel-item img {
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #ddd;
             object-fit: contain;
-            display: block;
+            height: 500px;
+            max-width: 540px;
             margin: 0 auto 20px auto;
         }
 

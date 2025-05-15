@@ -7,7 +7,11 @@
             </div>
 
             <div class="product-name">
-                <img src="{{ asset('storage/' . $item->img_path) }}" alt="">
+                @php
+                $images = explode(',', $item->img_path);
+                $firstImage = trim($images[0]);
+                @endphp
+                <img src="{{ asset('storage/' . $firstImage) }}" alt="Товар">
                 <h5>{{ $item->product_name }}</h5>
             </div>
 

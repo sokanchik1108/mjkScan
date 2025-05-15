@@ -28,7 +28,6 @@
         margin-top: auto;
     }
 
-
     .product-card {
         flex-direction: column;
         max-width: 550px;
@@ -122,22 +121,31 @@
             max-width: 250px;
         }
     }
+
+    .preview-container img {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        max-width: 100px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        bottom: 20px;
+        top: auto;
+        width: auto;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 </style>
-
-
 
 <body class="d-flex flex-column min-vh-100">
 
-
     <main class="flex-grow-1 d-flex flex-column">
         <div class="limited-width flex-grow-1 d-flex flex-column">
-
-
             <header class="p-3 text-bg-white">
-
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a href="/website" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none" style="margin-right: 10px;    font-size: 29px;
-    font-weight: 800;">
+                    <a href="/website" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none"
+                        style="margin-right: 10px; font-size: 29px; font-weight: 800;">
                         MJK
                     </a>
 
@@ -145,33 +153,19 @@
                         <li><a href="/website" class="nav-link px-2 text-black">Главная</a></li>
                     </ul>
 
-                    <form action="{{ route('getItem') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                        <input
-                            type="text"
-                            name="search"
-                            class="form-control form-control-dark text-bg-white text-dark"
-                            placeholder="Введите имя или артикул"
-                            aria-label="Search"
-                            value="{{ request('search') }}"
+                    <form action="{{ route('getItem') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+                        role="search">
+                        <input type="text" name="search" class="form-control form-control-dark text-bg-white text-dark"
+                            placeholder="Введите имя или артикул" aria-label="Search" value="{{ request('search') }}"
                             style="font-size:small">
                     </form>
 
-
-
-
-
                     <div class="text-end">
-
                         <a href="{{ route('getItem') }}" class="btn btn-warning" style="width: 100px;margin-right: 5px;height:38px">Назад</a>
-
                     </div>
                 </div>
-
                 <hr>
-
             </header>
-
-
 
             @if(session('success'))
             <div class="alert alert-success">
@@ -185,24 +179,17 @@
             </div>
             @endif
 
-
             <div class="container-fluid">
                 <div class="row">
-
-
                     @include('partials.filters', ['showTypeFilter' => false, 'showCategoryFilter' => true, 'showTypeFilterForBase' => true])
 
                     <div class="col-md-9 col-lg-10">
-
-
-
                         <div class="d-flex mb-3">
                             <form method="GET" action="{{ url()->current() }}" class="d-flex gap-2 align-items-center">
                                 {{-- сохраняем текущие фильтры --}}
                                 @foreach(request()->except('sort') as $key => $value)
                                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                                 @endforeach
-
                                 <label for="sort" class="me-2 mb-0">Сортировать:</label>
                                 <select name="sort" id="sort" class="form-control" onchange="this.form.submit()">
                                     <option value="">По умолчанию</option>
@@ -220,12 +207,26 @@
                         </div>
                         @else
                         <div class="row">
-
                             @foreach($items as $item)
                             <div class="col custom-col-5 col-md-4 col-sm-6 mb-4">
                                 <div class="card product-card">
                                     <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
-                                        <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="Товар" id="preview-img-{{ $item->id }}">
+                                        <div id="carousel-{{ $item->id }}" class="carousel slide">
+                                            <div class="carousel-inner">
+                                                @php
+                                                $images = explode(',', $item->img_path);
+                                                @endphp
+                                                @foreach($images as $index => $image)
+                                                <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                                    <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
+                                                </div>
+                                                @endforeach
+                                            </div>
+
+                                            @if(count($images) > 1)
+                                            @include('partials.carousel')
+                                            @endif
+                                        </div>
                                     </a>
                                     <div class="card-body d-flex flex-column">
                                         <div class="product-info mb-3">
@@ -265,21 +266,20 @@
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label for="img-{{ $item->id }}">Изменить изображение</label>
-                                                    <input type="file" class="form-control" id="img-{{ $item->id }}" name="product-image" accept="image/*" onchange="previewImage(event, '{{ $item->id }}')">
+                                                    <label for="img-{{ $item->id }}">Изменить изображения</label>
+                                                    <input type="file" class="form-control" id="img-{{ $item->id }}" name="product-images[]" accept="image/*" multiple onchange="previewImages(event, '{{ $item->id }}')">
                                                 </div>
 
-
+                                                <!-- Контейнер для превью изображений -->
+                                                <div id="preview-images-{{ $item->id }}" class="preview-container" style="margin-top: 10px;"></div>
 
                                                 <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Обновить товар</button>
                                             </form>
 
-
-
                                             <!-- Форма для удаления товара -->
                                             <form action="{{ route('deleteItem', $item->id) }}" method="POST" onsubmit="return confirmDelete()">
                                                 @csrf
-                                                @method('DELETE') <!-- Путь для удаления элемента -->
+                                                @method('DELETE')
                                                 <button type="submit" class="btn btn-danger" style="margin-top: 5px;">Удалить</button>
                                             </form>
 
@@ -296,6 +296,24 @@
                                                 function confirmDelete() {
                                                     return confirm('Вы уверены, что хотите удалить этот товар?');
                                                 }
+
+                                                function previewImages(event, itemId) {
+                                                    var files = event.target.files;
+                                                    var previewContainer = document.getElementById('preview-images-' + itemId);
+                                                    previewContainer.innerHTML = ''; // Очищаем старые превью
+
+                                                    Array.from(files).forEach(file => {
+                                                        var reader = new FileReader();
+                                                        reader.onload = function(e) {
+                                                            var img = document.createElement('img');
+                                                            img.src = e.target.result;
+                                                            img.classList.add('img-fluid', 'mb-2');
+                                                            img.style.maxWidth = '100px';
+                                                            previewContainer.appendChild(img);
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    });
+                                                }
                                             </script>
                                         </div>
                                     </div>
@@ -306,50 +324,45 @@
                         @endif
                     </div>
                 </div>
-                <script>
-                    function previewImage(event, itemId) {
-                        var reader = new FileReader();
-                        reader.onload = function() {
-                            var output = document.getElementById('preview-img-' + itemId);
-                            output.src = reader.result; // Изменяем изображение на выбранное
-                        };
-                        reader.readAsDataURL(event.target.files[0]);
-                    }
-
-
-
-                    document.getElementById('category').addEventListener('change', function() {
-                        let categoryId = this.value;
-                        let typeSelect = document.getElementById('type');
-
-                        // Очистим текущие опции
-                        typeSelect.innerHTML = '<option value="">Все типы</option>';
-
-                        // Если категория выбрана, отправим запрос для получения типов
-                        if (categoryId) {
-                            fetch(`/get-types-by-category/${categoryId}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    // Если типы найдены, добавим их в выпадающий список
-                                    if (data.types) {
-                                        data.types.forEach(type => {
-                                            let option = document.createElement('option');
-                                            option.value = type.id;
-                                            option.textContent = type.name;
-                                            typeSelect.appendChild(option);
-                                        });
-                                    }
-                                })
-                                .catch(error => console.error('Ошибка при загрузке типов:', error));
-                        }
-                    });
-                </script>
             </div>
-
-
-
         </div>
     </main>
+
+    <script>
+        document.getElementById('category').addEventListener('change', function() {
+            let categoryId = this.value;
+            let typeSelect = document.getElementById('type');
+
+            // Очистим текущие опции
+            typeSelect.innerHTML = '<option value="">Все типы</option>';
+
+            // Если категория выбрана, отправим запрос для получения типов
+            if (categoryId) {
+                fetch(`/get-types-by-category/${categoryId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Если типы найдены, добавим их в выпадающий список
+                        if (data.types) {
+                            data.types.forEach(type => {
+                                let option = document.createElement('option');
+                                option.value = type.id;
+                                option.textContent = type.name;
+                                typeSelect.appendChild(option);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Ошибка при загрузке типов:', error));
+            }
+        });
+    </script>
+
+
+
+    <!-- Включаем Bootstrap JS и Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+
 </body>
 
 </html>

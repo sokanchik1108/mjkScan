@@ -51,7 +51,22 @@
               <div class="col custom-col-5 col-md-4 col-sm-6 mb-4">
                   <div class="card product-card">
                       <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
-                          <img src="{{ asset('storage/' . $item->img_path) }}" class="card-img-top" alt="Товар">
+                          <div id="carousel-{{ $item->id }}" class="carousel slide">
+                              <div class="carousel-inner">
+                                  @php
+                                  $images = explode(',', $item->img_path);
+                                  @endphp
+                                  @foreach($images as $index => $image)
+                                  <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                      <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
+                                  </div>
+                                  @endforeach
+                              </div>
+
+                              @if(count($images) > 1)
+                              @include('partials.carousel')
+                              @endif
+                          </div>
                       </a>
                       <div class="card-body d-flex flex-column">
                           <div class="product-info mb-3">
@@ -92,6 +107,15 @@
 
 
       <style>
+          .carousel-control-prev,
+          .carousel-control-next {
+              bottom: 20px;
+              top: auto;
+              width: auto;
+              margin-left: 10px;
+              margin-right: 10px;
+          }
+
           .card-body {
               flex: 1;
               display: flex;
