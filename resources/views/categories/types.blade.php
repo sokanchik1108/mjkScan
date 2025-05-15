@@ -7,15 +7,11 @@
   <div class="container-fluid">
     <div class="row">
       {{-- Sidebar Filter --}}
-      <div class="col-md-3 col-lg-2 p-3">
-        <form method="GET" action="{{ route('types.show', ['categoryId' => $category->id, 'typeId' => $type->id]) }}" class="mb-4 filter-form">
 
-        @include('partials.filters')
+      @include('partials.filters', ['showTypeFilter' => false,'showCategoryFilter' => false])
         
-        </form>
-      </div>
 
-      @include('partials.filters-products')
+      @include('partials.filters-products', [ 'activeType' => true ])
 
     </div>
   </div>

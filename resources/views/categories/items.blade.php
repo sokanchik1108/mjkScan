@@ -2,27 +2,24 @@
 
 @section('title', 'Товары по категории')
 @section('content')
-  <div class="container-fluid">
-    <div class="row">
-      {{-- Sidebar Filter --}}
-      <div class="col-md-3 col-lg-2 p-3">
-        <form method="GET" action="{{ route('categories.items', $category->id) }}" class="mb-4 filter-form">
-          @include('partials.filters')
-        </form>
-      </div>
+<div class="container-fluid">
+  <div class="row">
+    {{-- Sidebar Filter --}}
 
-      @include('partials.filters-products')
+    @include('partials.filters', ['showTypeFilter' => true, 'showCategoryFilter' => false ])
 
-    </div>
+    @include('partials.filters-products', ['activeCategory' => true ])
+
   </div>
+</div>
 
-  <style>
-    @media (max-width: 767px) {
-      .col-md-3 {
-        width: 100%;
-      }
+<style>
+  @media (max-width: 767px) {
+    .col-md-3 {
+      width: 100%;
     }
-  </style>
+  }
+</style>
 @endsection
 
 @section('pagination')

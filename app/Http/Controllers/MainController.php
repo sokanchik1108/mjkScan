@@ -113,16 +113,81 @@ class MainController extends Controller
 
 
 
-    // Метод для получения всех товаров
     public function getItem(Request $request)
     {
         $query = Item::query();
-        $search = $request->input('search');
 
-        if ($search) {
-            // Сначала ищем по артикулу
-            $query->where('article', 'like', '%' . $search . '%')
-                ->orWhere('product_name', 'like', '%' . $search . '%');
+        // Поиск по артикулу и названию товара
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('article', 'like', '%' . $search . '%')
+                    ->orWhere('product_name', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Фильтрация по бренду
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        // Фильтрация по мощности
+        if ($request->filled('power')) {
+            $query->where('power', $request->power);
+        }
+
+        // Фильтрация по типу
+        if ($request->filled('type')) {
+            $query->where('type_id', $request->type);
+        }
+
+        // Фильтрация по категории
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        // Фильтрация по стране производства
+        if ($request->filled('madein')) {
+            $query->where('madein', $request->madein);
+        }
+
+        // Фильтрация по типу цоколя
+        if ($request->filled('basetype')) {
+            $query->where('basetype', $request->basetype);
+        }
+
+        // Фильтрация по цене от
+        if ($request->filled('price_from')) {
+            $query->where('sale_price', '>=', $request->price_from);
+        }
+
+        // Фильтрация по цене до
+        if ($request->filled('price_to')) {
+            $query->where('sale_price', '<=', $request->price_to);
+        }
+
+        // Фильтрация по наличию на складе
+        if ($request->boolean('in_stock')) {
+            $query->where('quantity', '>', 0);
+        }
+
+        // Сортировка
+        switch ($request->input('sort')) {
+            case 'price_asc':
+                $query->orderBy('sale_price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('sale_price', 'desc');
+                break;
+            case 'quantity_asc':
+                $query->orderBy('quantity', 'asc');
+                break;
+            case 'quantity_desc':
+                $query->orderBy('quantity', 'desc');
+                break;
+            default:
+                $query->latest(); // Последние добавленные
+                break;
         }
 
         $items = $query->get();

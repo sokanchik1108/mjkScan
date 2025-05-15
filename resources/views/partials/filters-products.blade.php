@@ -2,19 +2,23 @@
 
       <div class="col-md-9 col-lg-10">
 
-      {{-- breadcrumb --}}
+          {{-- breadcrumb --}}
 
-          <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="{{ route('website') }}">Главная</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">{{ $category->name }}</li>
-              </ol>
-          </nav>
+          {{-- Хлебные крошки --}}
+          @include('partials.breadcrumb', [
+          'activeHome' => $activeHome ?? false,
+          'category' => $category ?? null,
+          'activeCategory' => $activeCategory ?? false,
+          'type' => $type ?? null,
+          'activeType' => $activeType ?? false
+          ])
+
 
           {{-- Сортировка --}}
-          <div class="d-flex  mb-3">
-              <form method="GET" action="{{ route('categories.items', $category->id) }}" class="d-flex gap-2 align-items-center">
 
+          <div class="d-flex mb-3">
+
+              <form method="GET" action="{{ url()->current() }}" class="d-flex gap-2 align-items-center">
                   {{-- сохраняем текущие фильтры --}}
                   @foreach(request()->except('sort') as $key => $value)
                   <input type="hidden" name="{{ $key }}" value="{{ $value }}">
@@ -30,6 +34,10 @@
                   </select>
               </form>
           </div>
+
+
+
+
 
 
 

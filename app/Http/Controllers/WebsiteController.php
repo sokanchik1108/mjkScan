@@ -12,15 +12,17 @@ use Illuminate\Contracts\Support\ValidatedData;
 class WebsiteController extends Controller
 {
 
-public function website(Request $request)
-{
-    // Преобразуем первую букву запроса в заглавную
-    $query = $request->input('query');
-    if ($query) {
-        $query = ucfirst($query); // Первая буква заглавная
+    public function website(Request $request)
+    {
+        $query = $request->input('query');
+        $sort = $request->input('sort'); // Получаем параметр сортировки
 
-        $items = Item::with(['category', 'type'])
-            ->where(function ($q) use ($query) {
+        $itemsQuery = Item::with(['category', 'type']);
+
+        if ($query) {
+            $query = ucfirst($query); // Первая буква заглавная
+
+            $itemsQuery->where(function ($q) use ($query) {
                 $q->where('product_name', 'LIKE', '%' . $query . '%')
                     ->orWhere('description', 'LIKE', '%' . $query . '%')
                     ->orWhere('article', 'LIKE', '%' . $query . '%')
@@ -29,22 +31,230 @@ public function website(Request $request)
                     ->orWhere('power', 'LIKE', '%' . $query . '%')
                     ->orWhere('detailed', 'LIKE', '%' . $query . '%')
                     ->orWhere('madein', 'LIKE', '%' . $query . '%');
-            })
-            ->orWhereHas('category', function ($q) use ($query) {
+            })->orWhereHas('category', function ($q) use ($query) {
                 $q->where('name', 'LIKE', '%' . $query . '%');
-            })
-            ->orWhereHas('type', function ($q) use ($query) {
+            })->orWhereHas('type', function ($q) use ($query) {
                 $q->where('name', 'LIKE', '%' . $query . '%');
-            })
-            ->paginate(15)
-            ->appends(['query' => $query]);
-    } else {
-        $items = Item::with(['category', 'type'])->paginate(15);
+            });
+        }
+
+        // Применяем сортировку
+        switch ($sort) {
+            case 'price_asc':
+                $itemsQuery->orderBy('sale_price', 'asc');
+                break;
+            case 'price_desc':
+                $itemsQuery->orderBy('sale_price', 'desc');
+                break;
+            case 'name_asc':
+                $itemsQuery->orderBy('product_name', 'asc');
+                break;
+            case 'name_desc':
+                $itemsQuery->orderBy('product_name', 'desc');
+                break;
+            default:
+                $itemsQuery->latest(); // По умолчанию – новинки
+                break;
+        }
+
+        $items = $itemsQuery->paginate(15)->appends([
+            'query' => $query,
+            'sort' => $sort,
+        ]);
+
+        return view('website', compact('items')); // Замените 'your-view-name'
     }
 
-    return view('website', compact('items'));
-}
 
+
+
+
+
+    public function review_check(Request $request, $id)
+    {
+        // Валидируем входные данные
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',  // Рейтинг обязательно от 1 до 5
+        ]);
+
+        // Создаем новый объект Contact
+        $review = new Contact();
+
+        // Присваиваем значения полям объекта
+        $review->pluses = $request->input('pluses') ?? 'Не указаны';
+        $review->minuses = $request->input('minuses') ?? 'Не указаны';
+        $review->message = $request->input('message');
+        $review->rating = $request->input('rating');  // Рейтинг
+        $review->item_id = $id;  // ID товара
+
+        // Сохраняем объект в базу данных
+        $review->save();
+
+        // Перенаправляем пользователя обратно на страницу товара с сообщением
+        return redirect()->route('productpage.show', ['id' => $id])->with('review_success', 'Отзыв отправлен!');
+    }
+
+    // Показываем страницу товара с отзывами
+    public function showProductpage($id)
+    {
+        // Находим товар по ID
+        $item = Item::find($id);
+
+        if (!$item) {
+            abort(404, 'Товар не найден');
+        }
+
+        // Получаем все отзывы, связанные с товаром
+        $item = Item::with('contacts')->findOrFail($id);
+
+        // Передаем товар и отзывы в представление
+        return view('productpage', compact('item'));
+    }
+
+
+
+    public function add(Request $request, $id)
+    {
+        $cart = session()->get('cart', []);
+
+        // Получаем товар из базы данных
+        $item = Item::find($id);
+
+        // Проверяем, найден ли товар
+        if (!$item) {
+            return redirect()->back()->with('error', 'Товар не найден!');
+        }
+
+
+        // Подготовка данных о товаре для добавления в корзину
+        $product = [
+            'name' => $item->product_name,
+            'price' => (float)$item->sale_price,
+            'quantity' => (int) $request->quantity,
+            'image' => asset('storage/' . $item->img_path),
+        ];
+
+        // Добавляем товар в корзину
+        $cart[] = $product;
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Товар добавлен!')->with('item', [
+            'product_name' => $item->product_name,
+            'sale_price' => (float)$item->sale_price,
+            'article' => $item->article,
+            'img_path' => $item->img_path,
+            'quantity' => (int) $request->quantity,
+        ]);
+    }
+
+    public function index()
+    {
+        $cart = session()->get('cart', []);
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return view('basket', compact('cart'));
+    }
+
+
+    public function remove(Request $request)
+    {
+        $cart = session()->get('cart', []);
+        unset($cart[$request->index]);
+        session()->put('cart', array_values($cart));
+        return redirect('/cart');
+    }
+
+    public function clear(Request $request)
+    {
+        // Очистить корзину
+        session()->forget('cart');
+
+        return redirect()->route('cart.index')->with('success', 'Корзина очищена');
+    }
+
+
+
+
+
+
+
+
+
+
+    public function getItem(Request $request)
+    {
+        $query = Item::query();
+
+        // Фильтрация по параметрам, если они были переданы
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type_id', $request->type);
+        }
+
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->brand);
+        }
+
+        if ($request->filled('power')) {
+            $query->where('power', $request->power);
+        }
+
+        if ($request->filled('madein')) {
+            $query->where('madein', $request->madein);
+        }
+
+        if ($request->filled('basetype')) {
+            $query->where('basetype', $request->basetype);
+        }
+
+        if ($request->filled('price_from')) {
+            $query->where('sale_price', '>=', $request->price_from);
+        }
+
+        if ($request->filled('price_to')) {
+            $query->where('sale_price', '<=', $request->price_to);
+        }
+
+        if ($request->boolean('in_stock')) {
+            $query->where('quantity', '>', 0);
+        }
+
+        // Сортировка
+        switch ($request->input('sort')) {
+            case 'price_asc':
+                $query->orderBy('sale_price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('sale_price', 'desc');
+                break;
+            case 'quantity_asc':
+                $query->orderBy('quantity', 'asc');
+                break;
+            case 'quantity_desc':
+                $query->orderBy('quantity', 'desc');
+                break;
+            default:
+                $query->latest(); // Последние добавленные
+                break;
+        }
+
+        $items = $query->get();
+
+        // Получаем все категории и для каждой категории типы
+        $categories = Category::with('types')->get(); // Типы привязываются через отношение
+
+        return view('getItems.getItem', [
+            'items' => $items,
+            'categories' => $categories,
+        ]);
+    }
 
 
 
@@ -52,20 +262,82 @@ public function website(Request $request)
     public function websitegetItem(Request $request)
     {
         $query = Item::query();
-        $search = $request->input('search');
 
+        // Поиск по артикулу или названию
+        $search = $request->input('search');
         if ($search) {
-            // Сначала ищем по артикулу
-            $query->where('article', 'like', '%' . $search . '%')
-                ->orWhere('product_name', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('article', 'like', '%' . $search . '%')
+                    ->orWhere('product_name', 'like', '%' . $search . '%');
+            });
+        }
+
+        // === Фильтрация ===
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->input('category'));
+        }
+
+        if ($request->filled('type')) {
+            $query->where('type_id', $request->input('type'));
+        }
+
+        if ($request->filled('brand')) {
+            $query->where('brand', $request->input('brand'));
+        }
+
+        if ($request->filled('power')) {
+            $query->where('power', $request->input('power'));
+        }
+
+        if ($request->filled('madein')) {
+            $query->where('madein', $request->input('madein'));
+        }
+
+        if ($request->filled('basetype')) {
+            $query->where('basetype', $request->input('basetype'));
+        }
+
+        if ($request->filled('price_from')) {
+            $query->where('price', '>=', $request->input('price_from'));
+        }
+
+        if ($request->filled('price_to')) {
+            $query->where('price', '<=', $request->input('price_to'));
+        }
+
+        if ($request->has('in_stock')) {
+            $query->where('quantity', '>', 0);
+        }
+
+        // === Сортировка ===
+        switch ($request->input('sort')) {
+            case 'price_asc':
+                $query->orderBy('sale_price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('sale_price', 'desc');
+                break;
+            case 'quantity_asc':
+                $query->orderBy('quantity', 'asc');
+                break;
+            case 'quantity_desc':
+                $query->orderBy('quantity', 'desc');
+                break;
+            default:
+                $query->latest(); // Последние добавленные
+                break;
         }
 
         $items = $query->get();
 
-        return view('getItems.websitegetItem', ['items' => $items]);
+        return view('getItems.websitegetItem', [
+            'items' => $items
+        ]);
     }
 
-    
+
+
+
 
 
 
@@ -143,112 +415,6 @@ public function website(Request $request)
     }
 
 
-    public function review_check(Request $request, $id)
-    {
-        // Валидируем входные данные
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',  // Рейтинг обязательно от 1 до 5
-        ]);
-
-        // Создаем новый объект Contact
-        $review = new Contact();
-
-        // Присваиваем значения полям объекта
-        $review->pluses = $request->input('pluses') ?? 'Не указаны';
-        $review->minuses = $request->input('minuses') ?? 'Не указаны';
-        $review->message = $request->input('message');
-        $review->rating = $request->input('rating');  // Рейтинг
-        $review->item_id = $id;  // ID товара
-
-        // Сохраняем объект в базу данных
-        $review->save();
-
-        // Перенаправляем пользователя обратно на страницу товара с сообщением
-        return redirect()->route('productpage.show', ['id' => $id])->with('review_success', 'Отзыв отправлен!');
-    }
-
-
-    // Показываем страницу товара с отзывами
-    public function showProductpage($id)
-    {
-        // Находим товар по ID
-        $item = Item::find($id);
-
-        if (!$item) {
-            abort(404, 'Товар не найден');
-        }
-
-        // Получаем все отзывы, связанные с товаром
-        $item = Item::with('contacts')->findOrFail($id);
-
-        // Передаем товар и отзывы в представление
-        return view('productpage', compact('item'));
-    }
-
-
-
-    public function add(Request $request, $id)
-    {
-        $cart = session()->get('cart', []);
-
-        // Получаем товар из базы данных
-        $item = Item::find($id);
-
-        // Проверяем, найден ли товар
-        if (!$item) {
-            return redirect()->back()->with('error', 'Товар не найден!');
-        }
-
-
-        // Подготовка данных о товаре для добавления в корзину
-        $product = [
-            'name' => $item->product_name,
-            'price' => (float)$item->sale_price,
-            'quantity' => (int) $request->quantity,
-            'image' => asset('storage/' . $item->img_path),
-        ];
-
-        // Добавляем товар в корзину
-        $cart[] = $product;
-        session()->put('cart', $cart);
-
-        return redirect()->back()->with('success', 'Товар добавлен!')->with('item', [
-        'product_name' => $item->product_name,
-        'sale_price' => (float)$item->sale_price,
-        'article' => $item->article,
-        'img_path' => $item->img_path,
-        'quantity' => (int) $request->quantity,
-    ]);
-    }
-
-    public function index()
-    {
-        $cart = session()->get('cart', []);
-
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
-        }
-
-        return view('basket', compact('cart'));
-    }
-
-
-    public function remove(Request $request)
-    {
-        $cart = session()->get('cart', []);
-        unset($cart[$request->index]);
-        session()->put('cart', array_values($cart));
-        return redirect('/cart');
-    }
-
-    public function clear(Request $request)
-    {
-        // Очистить корзину
-        session()->forget('cart');
-
-        return redirect()->route('cart.index')->with('success', 'Корзина очищена');
-    }
 
 
 
@@ -323,21 +489,6 @@ public function website(Request $request)
     }
 
 
-
-
-
-
-
-    public function getTypes($categoryId)
-    {
-        $types = Type::where('category_id', $categoryId)->get();
-        return response()->json($types);
-    }
-
-
-
-
-
     public function show($categoryId, $typeId, Request $request)
     {
 
@@ -380,5 +531,32 @@ public function website(Request $request)
 
 
         return view('categories.types', compact('category', 'type', 'items'));
+    }
+
+
+
+
+
+    public function getTypes($categoryId)
+    {
+        $types = Type::where('category_id', $categoryId)->get();
+        return response()->json($types);
+    }
+
+
+
+
+    public function getTypesByCategory($categoryId)
+    {
+        $category = Category::with('types')->find($categoryId);
+
+        // Проверим, что категория существует
+        if ($category) {
+            return response()->json([
+                'types' => $category->types
+            ]);
+        }
+
+        return response()->json(['types' => []]);
     }
 }

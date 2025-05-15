@@ -4,6 +4,26 @@
     <p>Ничего не найдено</p>
   </div>
   @elseif(isset($items))
+
+  <div class="d-flex mb-3" style="margin-left: 120px;">
+
+    <form method="GET" action="{{ url()->current() }}" class="d-flex gap-2 align-items-center">
+      {{-- сохраняем текущие фильтры --}}
+      @foreach(request()->except('sort') as $key => $value)
+      <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+      @endforeach
+
+      <label for="sort" class="me-2 mb-0">Сортировать:</label>
+      <select name="sort" id="sort" class="form-control" onchange="this.form.submit()">
+        <option value="">По умолчанию</option>
+        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Цена по возврастанию</option>
+        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Цена по убыванию</option>
+        <option value="quantity_asc" {{ request('sort') == 'quantity_asc' ? 'selected' : '' }}>Количество по возврастанию</option>
+        <option value="quantity_desc" {{ request('sort') == 'quantity_desc' ? 'selected' : '' }}>Количество по убыванию</option>
+      </select>
+    </form>
+  </div>
+
   <div class="row">
     @foreach($items as $item)
     <div class="col-lg-2 col-md-3 col-sm-6 mb-4">

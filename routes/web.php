@@ -83,6 +83,8 @@ Route::post('/payment/process', [PaymentController::class, 'process'])->name('pa
 
  Route::delete('/admin/orders/{id}', [PaymentController::class, 'destroy'])->name('orders.destroy');
 
+ Route::get('/get-types-by-category/{categoryId}', [WebsiteController::class, 'getTypesByCategory']);
+
 
 
 
