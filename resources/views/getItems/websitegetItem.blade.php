@@ -147,10 +147,8 @@
 
 
             <header class="p-3 text-bg-white">
-
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a href="/website" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none" style="margin-right: 10px;    font-size: 29px;
-    font-weight: 800;">
+                    <a href="/website" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none" style="margin-right: 10px; font-size: 29px;font-weight: 800;">
                         MJK
                     </a>
 
@@ -175,7 +173,7 @@
 
                     <div class="text-end">
 
-                        <a href="{{ route('getItem') }}" class="btn btn-warning" style="width: 100px;margin-right: 5px;height:38px">Назад</a>
+                        <a href="{{ route('websitegetItem') }}" class="btn btn-warning" style="width: 100px;margin-right: 5px;height:38px">Назад</a>
 
                     </div>
                 </div>
@@ -265,7 +263,7 @@
                                                 <div class="form-group">
                                                     <label for="category_id_{{ $item->id }}">Категория:</label>
                                                     <select name="category_id" id="category_id_{{ $item->id }}">
-                                                        <option value="" disabled {{ $item->category_id ? '' : 'selected' }}>Выберите категорию</option>
+                                                        <option  value="" disabled {{ $item->category_id ? '' : 'selected' }}>Выберите категорию</option>
                                                         @foreach ($categories as $category)
                                                         <option value="{{ $category->id }}" {{ $item->category_id == $category->id ? 'selected' : '' }}>
                                                             {{ $category->name }}
@@ -275,10 +273,10 @@
                                                 </div>
 
                                                 <!-- Тип товара -->
-                                                <div class="form-group">
+                                                <div class="form-group" style="margin-top:10px">
                                                     <label for="type_id_{{ $item->id }}">Тип товара:</label>
                                                     <select name="type_id" id="type_id_{{ $item->id }}">
-                                                        <option value="" disabled {{ !$item->type_id ? 'selected' : '' }}>Выберите тип</option>
+                                                        <option  disabled {{ !$item->type_id ? 'selected' : '' }}>Выберите тип</option>
                                                         @foreach ($categories as $category)
                                                         @foreach ($category->types as $type)
                                                         <option value="{{ $type->id }}"
@@ -331,7 +329,7 @@
                                                 </script>
 
                                                 <!-- Артикул -->
-                                                <div class="form-group">
+                                                <div class="form-group" style="margin-top:10px">
                                                     <label for="article-{{ $item->id }}">Артикул</label>
                                                     <input type="text" class="form-control" id="article-{{ $item->id }}" name="article" value="{{ $item->article }}">
                                                 </div>

@@ -7,123 +7,132 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Детали товара</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</head>
-
-<body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
-
-        /* Общие стили */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         h1 {
             text-align: center;
-            color: #333;
-            font-size: 2.5em;
-            margin-top: 20px;
+            color: #212529;
+            margin: 30px 0;
+            font-weight: 600;
         }
 
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            min-height: 80vh;
+        }
 
-        /* Стили карточки */
         .card {
-            width: 25rem;
-            margin: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
             background-color: #fff;
+            margin: 20px;
         }
 
         .card-body {
-            background-color: #f1f1f1;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 25px;
+            background-color: #fdfdfd;
         }
 
         .card-title {
-            font-size: 1.8em;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 1.6em;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 15px;
         }
 
         .card-text {
-            font-size: 1.3em;
-            color: #555;
-            margin-bottom: 10px;
-            font-weight: 500;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            color: #495057;
         }
 
         .card-body a {
-            text-decoration: none;
-            color: black;
-            font-size: large;
-            font-weight: 600;
+            color: #0d6efd;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 10px;
         }
 
         .card-body a:hover {
             text-decoration: underline;
-            color: #0d6efd;
         }
 
+        .additional-info {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
 
-        /* Стили для сообщений "Товар не найден" */
+        .form-label {
+            font-weight: 500;
+        }
+
+        .alert-success {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         p {
             text-align: center;
             font-size: 1.2em;
-            color: #d9534f;
-            margin-top: 20px;
+            color: #dc3545;
+            margin-top: 30px;
         }
-
-
     </style>
+</head>
 
-    <h1 style="text-align: center;">Детали товара</h1>
+<body>
+
+    <h1>Детали товара</h1>
     <div class="container">
         @if($item)
-        <div class="card" style="width: 25rem;margin:20px;border-radius: 8px;">
-                <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @php
+        <div class="card">
+            <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @php
                         $images = explode(',', $item->img_path);
-                        @endphp
-                        @foreach($images as $index => $image)
+                    @endphp
+                    @foreach($images as $index => $image)
                         <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                            <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
+                            <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100 rounded-top" alt="Изображение товара">
                         </div>
-                        @endforeach
-                    </div>
-
-                    @if(count($images) > 1)
-@include('partials.carousel')
-                    @endif
+                    @endforeach
                 </div>
-            <div class="card-body" style="background-color: #f1f1f1;">
-                <h5 class="card-title"> {{ $item->product_name }}</h5>
+                @if(count($images) > 1)
+                    @include('partials.carousel')
+                @endif
+            </div>
 
-                <h5 class="card-text">В наличии: <b>{{ $item->quantity }}</b></h5>
+            <div class="card-body">
+                <h5 class="card-title">{{ $item->product_name }}</h5>
+                <p class="card-text">В наличии: <strong>{{ $item->quantity }} шт.</strong></p>
+                <p class="card-text">Цена продажи: <strong>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</strong></p>
+                <a href="{{ route('productpage.show', ['id' => $item->id]) }}" class="d-block text-center mt-3">Подробнее о товаре</a>
 
-                <h5 class="card-text">Цена продажи: <b>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</b></h5>
 
-                <a href="{{ route('productpage.show', ['id' => $item->id]) }}">Подробнее о товаре</a>
-
-                <!-- Показываем дополнительную информацию, если параметр 'id' в URL равен 'mjkHash12321321' -->
                 @if(request()->get('id') == 'mjkHash')
                 <div class="additional-info">
-                    <h5 class="card-text">Цена прихода: <b>{{ number_format($item->purchase_price, 0, '.', '.') }}</b></h5>
-                    <h5 class="card-text">Артикул: <b>{{ $item->article }}</b></h5>
-                    <!-- Форма для изменения количества товара -->
+                    <p class="card-text">Цена прихода: <strong>{{ $item->purchase_price }}</strong></p>
+                    <p class="card-text">Артикул: <strong>{{ $item->article }}</strong></p>
+
                     <form action="{{ route('update_quantity', $item->id) }}" method="POST">
                         @csrf
                         @method('PUT')
@@ -134,7 +143,6 @@
                         <button type="submit" class="btn btn-primary">Обновить количество</button>
                     </form>
 
-                    <!-- Показываем сообщение об успехе -->
                     @if(session('success'))
                     <div class="alert alert-success mt-3">
                         {{ session('success') }}
@@ -142,21 +150,12 @@
                     @endif
                 </div>
                 @endif
-
             </div>
         </div>
         @else
         <p>Товар не найден.</p>
         @endif
     </div>
-
-
-    <script>
-        // Показываем дополнительную информацию, если параметр id равен 'mjkHash12321321'
-        if (window.location.search.includes('id=mjkHash12321321')) {
-            document.querySelector('.additional-info').style.display = 'block';
-        }
-    </script>
 
 </body>
 

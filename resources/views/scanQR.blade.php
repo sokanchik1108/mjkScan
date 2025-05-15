@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,8 +44,11 @@
             margin-top: 20px;
             display: none;
         }
+
+
     </style>
 </head>
+
 <body>
     <h1>Сканировать QR-код</h1>
     <div id="qr-reader"></div>
@@ -60,15 +64,20 @@
 
                 // Если параметр 'id' уже есть в URL, добавляем его при переходе
                 if (urlParams.has('id') && urlParams.get('id') === 'mjkHash') {
-                    window.location.href = '/product/' + productId + '?id=mjkHash';  // Переходим с параметром id=mjkHash12321321
+                    window.location.href = '/product/' + productId + '?id=mjkHash'; // Переходим с параметром id=mjkHash12321321
                 } else {
-                    window.location.href = '/product/' + productId;  // Переходим без параметра id
+                    window.location.href = '/product/' + productId; // Переходим без параметра id
                 }
             }
 
             var html5QrCode = new Html5Qrcode("qr-reader");
 
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
+            html5QrCode.start({
+                    facingMode: "environment"
+                }, {
+                    fps: 10,
+                    qrbox: 250
+                }, onScanSuccess)
                 .catch(err => {
                     console.error("Ошибка сканирования: ", err);
                     document.getElementById("error-message").style.display = 'block';
@@ -76,4 +85,5 @@
         });
     </script>
 </body>
+
 </html>

@@ -208,7 +208,7 @@
                         @else
                         <div class="row">
                             @foreach($items as $item)
-                            <div class="col custom-col-5 col-md-4 col-sm-6 mb-4">
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 custom-col-5" >
                                 <div class="card product-card">
                                     <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
                                         <div id="carousel-{{ $item->id }}" class="carousel slide">

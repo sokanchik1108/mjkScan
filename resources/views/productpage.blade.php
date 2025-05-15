@@ -7,89 +7,88 @@
 <div class="container">
     <div class="block">
         <div class="row">
-            <div class="col">
-                <div>
-                    <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            @php
-                            $images = explode(',', $item->img_path);
-                            @endphp
-                            @foreach($images as $index => $image)
-                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
-                            </div>
-                            @endforeach
-                        </div>
-
-                        @if(count($images) > 1)
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="prev">
-                            <i class="fas fa-chevron-left fa-lg text-dark"></i> <!-- Уменьшенный размер стрелки -->
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="next">
-                            <i class="fas fa-chevron-right fa-lg text-dark"></i> <!-- Уменьшенный размер стрелки -->
-                        </button>
-
-                        @endif
+<div class="row">
+    <!-- Блок с изображением -->
+    <div class="col-12 col-md-6 order-1 order-md-1">
+        
+        <div>
+            <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @php
+                    $images = explode(',', $item->img_path);
+                    @endphp
+                    @foreach($images as $index => $image)
+                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                        <img src="{{ asset('storage/' . trim($image)) }}" class="d-block w-100" alt="Изображение товара">
                     </div>
+                    @endforeach
                 </div>
+
+                @if(count($images) > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="prev">
+                    <i class="fas fa-chevron-left fa-lg text-dark"></i>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="next">
+                    <i class="fas fa-chevron-right fa-lg text-dark"></i>
+                </button>
+                @endif
             </div>
+        </div>
+    </div>
 
-            <div class="col">
-                <div>
-                    <h4>{{ $item->product_name }}</h4>
-                </div>
+    <!-- Блок с текстом -->
+    <div class="col-12 col-md-6 order-2 order-md-2">
+        <div>
+            <h4>{{ $item->product_name }}</h4>
+        </div>
 
-                <div class="price">
-                    <h3>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</h3>
-                    <h5 style="font-size: 15px;color: #7b828a;margin-top:10px">В наличии: <span style="color:black">{{ $item->quantity }}шт.</span></h5>
-                </div>
+        <div class="price">
+            <h3>{{ number_format($item->sale_price, 0, '.', '.') }} ₸</h3>
+            <h5 style="font-size: 15px;color: #7b828a;margin-top:10px">В наличии: <span style="color:black">{{ $item->quantity }}шт.</span></h5>
+        </div>
 
-                <div class="basket">
-                    <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
-                        @csrf
-                        <button type="submit" class="btn btn-warning">В корзину</button>
-                        <input type="number" name="quantity" value="1" min="1" class="form-control" style="max-width: 60px;" required>
-                    </form>
-                </div>
+        <div class="basket">
+            <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
+                @csrf
+                <button type="submit" class="btn btn-warning">В корзину</button>
+                <input type="number" name="quantity" value="1" min="1" class="form-control" style="max-width: 60px;" required>
+            </form>
+        </div>
 
+        <div class="cod">
+            <p1>Рейтинг:
+                @include('partials.average-rating', ['item' => $item])
+            </p1>
+        </div>
 
-
-
-                <div class="cod">
-                    <p1>Рейтинг:
-                        @include('partials.average-rating', ['item' => $item])
-                    </p1>
-
-                </div>
-
-
-                @if($item)
-                <div class="product-character-wrapper">
-                    <ul class="product-character-wrapper__indication" id="product-character-wrapper__indication">
-                        <li class="product-character-wrapper__indication--ttl"><strong>Характеристики</strong></li>
-                        <li class="product-character-wrapper__indication--tables">
-                            <span class="product-character-wrapper__indication--property артикул">Артикул</span>
-                            <span class="product-character-wrapper__indication--name">{{ $item->article }}</span>
-                        </li>
-                        <li class="product-character-wrapper__indication--tables">
-                            <span class="product-character-wrapper__indication--property бренд">Бренд</span>
-                            <span class="product-character-wrapper__indication--name">{{ $item->brand }}</span>
-                        </li>
-                        <li class="product-character-wrapper__indication--tables">
-                            <span class="product-character-wrapper__indication--property тип-цоколя">Тип цоколя</span>
-                            <span class="product-character-wrapper__indication--name">{{ $item->basetype }}</span>
-                        </li>
-                        <li class="product-character-wrapper__indication--tables">
-                            <span class="product-character-wrapper__indication--property мощность,-вт">Мощность, Вт</span>
-                            <span class="product-character-wrapper__indication--name">{{ $item->power }}</span>
-                        </li>
-                        <li class="product-character-wrapper__indication--tables">
-                            <span class="product-character-wrapper__indication--property страна-производитель">Страна производитель</span>
-                            <span class="product-character-wrapper__indication--name" href="#">{{ $item->madein }}</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        @if($item)
+        <div class="product-character-wrapper">
+            <ul class="product-character-wrapper__indication" id="product-character-wrapper__indication">
+                <li class="product-character-wrapper__indication--ttl"><strong>Характеристики</strong></li>
+                <li class="product-character-wrapper__indication--tables">
+                    <span class="product-character-wrapper__indication--property артикул">Артикул</span>
+                    <span class="product-character-wrapper__indication--name">{{ $item->article }}</span>
+                </li>
+                <li class="product-character-wrapper__indication--tables">
+                    <span class="product-character-wrapper__indication--property бренд">Бренд</span>
+                    <span class="product-character-wrapper__indication--name">{{ $item->brand }}</span>
+                </li>
+                <li class="product-character-wrapper__indication--tables">
+                    <span class="product-character-wrapper__indication--property тип-цоколя">Тип цоколя</span>
+                    <span class="product-character-wrapper__indication--name">{{ $item->basetype }}</span>
+                </li>
+                <li class="product-character-wrapper__indication--tables">
+                    <span class="product-character-wrapper__indication--property мощность,-вт">Мощность, Вт</span>
+                    <span class="product-character-wrapper__indication--name">{{ $item->power }}</span>
+                </li>
+                <li class="product-character-wrapper__indication--tables">
+                    <span class="product-character-wrapper__indication--property страна-производитель">Страна производитель</span>
+                    <span class="product-character-wrapper__indication--name" href="#">{{ $item->madein }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
             <div class="w-100"></div>
             <div class="col" style="max-width:1050px;">
@@ -198,7 +197,7 @@
     @endif
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <style>
         .carousel-control-prev,
@@ -523,6 +522,8 @@
 
 
 
+
+
         /* Стили для мобильных устройств */
         @media (max-width: 768px) {
             .container {
@@ -535,10 +536,28 @@
                 max-width: 100%;
             }
 
-            .block img {
-                width: 100%;
-                height: auto;
-            }
+                .carousel {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .carousel-item img {
+
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        top: auto;
+        margin: 0 20px;
+    }
+
+    .carousel-control-prev i,
+    .carousel-control-next i {
+        font-size: 1.2rem;
+    }
 
             .block .col h4 {
                 width: 310px;
