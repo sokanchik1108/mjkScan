@@ -63,24 +63,7 @@ class MainController extends Controller
     }
 
 
-    // Метод для сохранения изображения товара
-    public function saveFile(Request $request)
-    {
-        // Проверка на наличие файла и его валидность
-        if ($request->hasFile('product-image') && $request->file('product-image')->isValid()) {
-            $file = $request->file('product-image');
 
-            // Генерация уникального имени файла
-            $uniqueFileName = time() . '_' . $file->getClientOriginalName();
-
-            // Сохраняем файл с уникальным именем в папку "files" в public storage
-            $path = $file->storeAs('files', $uniqueFileName, 'public');
-
-            return $path;
-        }
-
-        return null;  // Если файл не был передан или не валиден
-    }
 
     // Метод для генерации и сохранения QR-кода
     public function generateQrCode($data)
@@ -95,7 +78,7 @@ class MainController extends Controller
 
         // Проверяем, существует ли директория, если нет, то создаем её
         if (!is_dir($directory)) {
-            mkdir($directory, 0777, true); // Создаём директорию с правами 0777
+            mkdir($directory, 0755, true); // Создаём директорию с правами 0777
         }
 
         // Генерация имени файла QR-кода
@@ -104,6 +87,7 @@ class MainController extends Controller
 
         // Запись изображения QR-кода в файл
         $writer->write($qrCode)->saveToFile($path);
+
 
         // Возвращаем относительный путь для сохранения в базе данных
         return 'qrcodes/' . $fileName;
@@ -188,19 +172,14 @@ class MainController extends Controller
                 break;
         }
 
-        $items = $query->get();
+        $items = $query->paginate(10);
 
         return view('getItems.getItem', ['items' => $items]);
     }
 
 
 
-    // Метод для отображения всех товаров на странице продукта
-    public function product()
-    {
-        $items = Item::all();
-        return view('product', ['items' => $items]);
-    }
+
 
     // Метод для удаления товара по ID
     public function deleteItem($id)
@@ -210,15 +189,29 @@ class MainController extends Controller
 
         // Если товар найден
         if ($item) {
+            // Удаляем изображения товара
+            if ($item->img_path) {
+                $images = explode(',', $item->img_path); // Получаем массив путей
+                foreach ($images as $image) {
+                    $imagePath = storage_path('app/public/' . trim($image));
+                    if (file_exists($imagePath)) {
+                        unlink($imagePath); // Удаляем файл
+                    }
+                }
+            }
+
             // Удаляем изображение QR-кода
-            if ($item->qrcode_path && file_exists(storage_path('app/' . $item->qrcode_path))) {
-                unlink(storage_path('app/' . $item->qrcode_path));
+            if ($item->qrcode_path) {
+                $qrPath = public_path($item->qrcode_path);
+                if (file_exists($qrPath)) {
+                    unlink($qrPath);
+                }
             }
 
             // Удаляем товар
             $item->delete();
 
-            return back()->with('success', 'Товар успешно удален!');
+            return back()->with('success', 'Товар и все изображения удалены!');
         }
 
         return back()->with('error', 'Товар не найден!');
@@ -226,80 +219,81 @@ class MainController extends Controller
 
 
 
-public function updateItem(Request $request, $id)
-{
-    $item = Item::find($id);
 
-    if (!$item) {
-        return redirect()->route('getItem')->with('error', 'Товар не найден');
-    }
+    public function updateItem(Request $request, $id)
+    {
+        $item = Item::find($id);
 
-    $validatedData = $request->validate([
-        'product-name' => 'required|string|max:255',
-        'quantity' => 'required|integer',
-        'purchase-price' => 'required',
-        'sale-price' => 'required|numeric',
-    ]);
+        if (!$item) {
+            return redirect()->route('getItem')->with('error', 'Товар не найден');
+        }
 
-    $isUpdated = false;
+        $validatedData = $request->validate([
+            'product-name' => 'required|string|max:255',
+            'quantity' => 'required|integer',
+            'purchase-price' => 'required',
+            'sale-price' => 'required|numeric',
+        ]);
 
-    if ($item->product_name !== $validatedData['product-name']) {
-        $item->product_name = $validatedData['product-name'];
-        $isUpdated = true;
-    }
+        $isUpdated = false;
 
-    if ((float)$item->quantity !== (float)$validatedData['quantity']) {
-        $item->quantity = $validatedData['quantity'];
-        $isUpdated = true;
-    }
+        if ($item->product_name !== $validatedData['product-name']) {
+            $item->product_name = $validatedData['product-name'];
+            $isUpdated = true;
+        }
 
-    if ($item->purchase_price !== $validatedData['purchase-price']) {
-        $item->purchase_price = $validatedData['purchase-price'];
-        $isUpdated = true;
-    }
+        if ((float)$item->quantity !== (float)$validatedData['quantity']) {
+            $item->quantity = $validatedData['quantity'];
+            $isUpdated = true;
+        }
 
-    if ((float)$item->sale_price !== (float)$validatedData['sale-price']) {
-        $item->sale_price = $validatedData['sale-price'];
-        $isUpdated = true;
-    }
+        if ($item->purchase_price !== $validatedData['purchase-price']) {
+            $item->purchase_price = $validatedData['purchase-price'];
+            $isUpdated = true;
+        }
 
-if ($request->hasFile('product-images')) {
-    $uploadedFiles = $request->file('product-images');
+        if ((float)$item->sale_price !== (float)$validatedData['sale-price']) {
+            $item->sale_price = $validatedData['sale-price'];
+            $isUpdated = true;
+        }
 
-    if (!empty($uploadedFiles)) {
-        // Удаляем старые изображения
-        if ($item->img_path) {
-            $oldImages = explode(',', $item->img_path);
-            foreach ($oldImages as $image) {
-                $imagePath = storage_path('app/public/' . trim($image));
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
+        if ($request->hasFile('product-images')) {
+            $uploadedFiles = $request->file('product-images');
+
+            if (!empty($uploadedFiles)) {
+                // Удаляем старые изображения
+                if ($item->img_path) {
+                    $oldImages = explode(',', $item->img_path);
+                    foreach ($oldImages as $image) {
+                        $imagePath = storage_path('app/public/' . trim($image));
+                        if (file_exists($imagePath)) {
+                            unlink($imagePath);
+                        }
+                    }
                 }
+
+                $paths = [];
+
+                foreach ($uploadedFiles as $file) {
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $path = $file->storeAs('products', $filename, 'public');
+                    $paths[] = $path;
+                }
+
+                $newImgPath = implode(',', $paths);
+                $item->img_path = $newImgPath;
+                $isUpdated = true; // Обновляем только при наличии файлов
             }
         }
 
-        $paths = [];
-
-        foreach ($uploadedFiles as $file) {
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('products', $filename, 'public');
-            $paths[] = $path;
+        if (!$isUpdated) {
+            return redirect()->route('getItem')->with('info', 'Товар не изменился.');
         }
 
-        $newImgPath = implode(',', $paths);
-        $item->img_path = $newImgPath;
-        $isUpdated = true; // Обновляем только при наличии файлов
+        $item->save();
+
+        return redirect()->route('getItem')->with('success', 'Товар успешно обновлен!');
     }
-}
-
-    if (!$isUpdated) {
-        return redirect()->route('getItem')->with('info', 'Товар не изменился.');
-    }
-
-    $item->save();
-
-    return redirect()->route('getItem')->with('success', 'Товар успешно обновлен!');
-}
 
 
 
@@ -312,31 +306,21 @@ if ($request->hasFile('product-images')) {
         return view('scanQR'); // Возвращаем Blade-шаблон для сканирования
     }
 
-    // Метод для просмотра товара по ID
-    public function viewProduct($id)
+
+
+    public function show($id)
     {
-        // Находим товар по ID
         $item = Item::find($id);
 
-        // Если товар найден
-        if ($item) {
-            return view('product', ['item' => $item]);  // Страница товара
+        if (!$item) {
+            return redirect()->route('scanQr')->with('error', 'Товар не найден');
         }
 
-        // Если товар не найден, показываем ошибку
-        return redirect()->route('scanQr')->with('error', 'Товар не найден');
-    }
-
-    // Метод для отображения товара по ID (для шаблона Blade)
-    public function show($id, Request $request)
-    {
-        $item = Item::find($id);
-
-        // Проверка на наличие сообщения об успехе в сессии
         $successMessage = session('success');
 
         return view('product', compact('item', 'successMessage'));
     }
+
 
     public function updateQuantity($id, Request $request)
     {
