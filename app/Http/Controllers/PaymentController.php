@@ -9,6 +9,14 @@ class PaymentController extends Controller
 {
     public function process(Request $request)
     {
+        // Получаем корзину из сессии
+        $cart = session()->get('cart', []);
+
+        // Проверяем, если корзина пуста
+        if (empty($cart)) {
+            return redirect()->route('payment')->with('error', 'Корзина пуста. Пожалуйста, добавьте товары в корзину.');
+        }
+
         // Валидация данных из формы
         $request->validate([
             'name' => ['required', 'regex:/^[\pL\s]+$/u', 'max:255'],
@@ -26,9 +34,6 @@ class PaymentController extends Controller
         $payment = new Payment();
         $payment->name = $request->name;
         $payment->phone = $request->phone;
-
-        // Получаем корзину из сессии
-        $cart = session()->get('cart', []);
         $payment->cart = json_encode($cart);  // Сохраняем корзину как JSON строку
         $payment->save();
 
@@ -37,6 +42,7 @@ class PaymentController extends Controller
 
         return redirect()->route('payment')->with('success', 'Заказ оформлен, мы свяжемся с вами в ближайшее время');
     }
+
 
     public function adminOrders()
     {
@@ -66,5 +72,14 @@ class PaymentController extends Controller
         $payment->delete();
 
         return back()->with('success', 'Заказ успешно удалён.');
+    }
+
+    public function destroyAll(Request $request)
+    {
+        // Удаляем все заказы
+        Payment::query()->delete();
+
+        // Отправляем сообщение об успешном удалении
+        return redirect()->route('admin.orders')->with('success', 'Все заказы были удалены.');
     }
 }

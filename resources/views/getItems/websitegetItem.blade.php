@@ -145,10 +145,10 @@
     <main class="flex-grow-1 d-flex flex-column">
         <div class="limited-width flex-grow-1 d-flex flex-column">
 
-
-            <header class="p-3 text-bg-white">
+                    <header class="p-3 text-bg-white">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a href="/website" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none" style="margin-right: 10px; font-size: 29px;font-weight: 800;">
+                    <a href="/website" class="d-flex align-items-center mb-2 mb-lg-0 text-black text-decoration-none"
+                        style="margin-right: 10px; font-size: 29px; font-weight: 800;">
                         MJK
                     </a>
 
@@ -156,30 +156,14 @@
                         <li><a href="/website" class="nav-link px-2 text-black">Главная</a></li>
                     </ul>
 
-                    <form action="{{ route('getItem') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                        <input
-                            type="text"
-                            name="search"
-                            class="form-control form-control-dark text-bg-white text-dark"
-                            placeholder="Введите имя или артикул"
-                            aria-label="Search"
-                            value="{{ request('search') }}"
-                            style="font-size:small">
+                    <form action="{{ route('websitegetItem') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" style="width: 100%; max-width: 500px;margin: 0 auto;justify-content: center;">
+                        <input type="text" name="search" class="form-control form-control-dark text-bg-white text-dark"
+                            placeholder="Введите имя или артикул" aria-label="Search" value="{{ request('search') }}">
                     </form>
 
 
-
-
-
-                    <div class="text-end">
-
-                        <a href="{{ route('websitegetItem') }}" class="btn btn-warning" style="width: 100px;margin-right: 5px;height:38px">Назад</a>
-
-                    </div>
                 </div>
-
                 <hr>
-
             </header>
 
 

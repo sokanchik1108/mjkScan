@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата заказа</title>
+    <title>Оформление заказа</title>
 </head>
 
 <style>
@@ -205,7 +205,7 @@
         @enderror
     </div>
 
-    <button type="submit">Оплатить</button>
+    <button type="submit">Оформить</button>
 </form>
 
 

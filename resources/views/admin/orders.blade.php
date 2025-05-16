@@ -9,11 +9,21 @@
 </div>
 @endif
 
-<h1 class="text-center mt-4">Список заказов</h1>
+<h1>Список заказов</h1>
 
-<div class="d-flex justify-content-center">
-    <table class="table table-bordered w-auto">
-        <thead class="text-center">
+<!-- Кнопка для удаления всех заказов -->
+<div class="d-flex justify-content-center mt-4">
+    <form action="{{ route('orders.destroyAll') }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить все заказы?');">
+        @csrf
+        <button type="submit" class="btn btn-danger">Удалить все заказы</button>
+    </form>
+</div>
+
+
+<!-- Контейнер для таблицы с адаптивностью -->
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
             <tr>
                 <th>Товары</th>
                 <th>Имя</th>
@@ -21,7 +31,7 @@
                 <th>Дата</th>
                 <th>Общая сумма</th>
                 <th>Статусы</th>
-                <th>Действия</th> <!-- New column for actions -->
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -39,15 +49,18 @@
                         $subtotal = $item['price'] * $item['quantity'];
                         $total += $subtotal;
                         @endphp
-                        <li class="mb-2 d-flex align-items-center">
+                        <li class="mb-2 d-flex align-items-start">
                             @if(isset($item['image']))
                             <img src="{{ asset($item['image']) }}" alt="товар" width="60" height="60" class="me-2">
                             @endif
-                            <div>
+                            <div class="text-start">
                                 <strong>{{ $item['name'] }}</strong><br>
-                                {{ $item['quantity'] }} x {{ number_format($item['price'], 0, '.', ' ') }} ₸
+                                <span class="text-primary d-block">{{ $item['article'] }}</span>
+                                <span>{{ $item['quantity'] }} x {{ number_format($item['price'], 0, '.', ' ') }} ₸</span>
                             </div>
                         </li>
+
+
                         @endforeach
                     </ul>
                     @else
@@ -68,17 +81,18 @@
                                 <option value="Не отдан" {{ $payment->delivery_status === 'Не отдан' ? 'selected' : '' }}>Не отдан</option>
                             </select>
 
-                            <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                            <button type="submit" class="btn btn-sm btn-primary" style="width: 100;font-size: 14px;">Сохранить</button>
                         </div>
                     </form>
                 </td>
 
-                <!-- New column for the delete button -->
+                <!-- Колонка для кнопки удаления -->
                 <td class="text-center">
                     <form action="{{ route('orders.destroy', $payment->id) }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот заказ?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Удалить заказ</button>
+                        <button type="submit" class="btn btn-sm btn-danger" style="        width: 70%;
+        font-size: 14px;">Удалить заказ</button>
                     </form>
                 </td>
             </tr>
@@ -87,4 +101,149 @@
     </table>
 </div>
 
+<style>
+    /* Основной стиль для сайта */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    /* Оформление заголовков */
+    h1 {
+        font-size: 2rem;
+        color: #333;
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    /* Контейнер для таблицы */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-top: 20px;
+        margin-bottom: 100px;
+    }
+
+    /* Таблица */
+    .table {
+        width: 100%;
+        table-layout: auto;
+        word-wrap: break-word;
+        white-space: nowrap;
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #dee2e6;
+    }
+
+    .table th {
+        background-color: #343a40;
+        color: white;
+    }
+
+    .table td img {
+        width: 100px;
+        height: 100px;
+        margin-right: 10px;
+    }
+
+    .table td div {
+        word-wrap: break-word;
+    }
+
+    /* Стиль кнопок */
+    .btn {
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 4px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+
+    .btn-sm {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+
+    /* Адаптивность для мобильных устройств */
+    @media (max-width: 768px) {
+
+        /* Уменьшаем шрифт заголовков */
+        h1 {
+            font-size: 1.5rem;
+            margin-top: 10px;
+        }
+
+        /* Сделаем таблицу с горизонтальной прокруткой */
+        .table-responsive {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        /* Делаем таблицу прокручиваемой */
+        .table {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Уменьшаем отступы в карточках */
+        .d-flex {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Улучшаем оформление выбора */
+        .form-select-sm {
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        /* Меньшие отступы в ячейках таблицы */
+        .table td,
+        .table th {
+            padding: 8px;
+        }
+    }
+
+    @media (max-width: 576px) {
+
+        /* Дополнительная настройка для очень маленьких экранов */
+        .table td,
+        .table th {
+            font-size: 12px;
+            padding: 6px;
+        }
+
+        .btn {
+            font-size: 12px;
+        }
+    }
+</style>
+@php($hideLayoutBlock = true)
 @endsection

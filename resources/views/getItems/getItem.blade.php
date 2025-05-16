@@ -116,6 +116,20 @@
         text-decoration: underline;
     }
 
+
+
+    input.form-control.form-control-dark {
+        width: 100%;
+        /* Делаем инпут растягивающимся на всю ширину формы */
+    }
+
+
+    input.form-control.form-control-dark {
+        width: 100%;
+        /* Делаем инпут растягивающимся на всю ширину формы */
+    }
+
+
     @media (max-width: 576px) {
         .offcanvas {
             max-width: 250px;
@@ -153,16 +167,12 @@
                         <li><a href="/website" class="nav-link px-2 text-black">Главная</a></li>
                     </ul>
 
-                    <form action="{{ route('getItem') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
-                        role="search">
+                    <form action="{{ route('getItem') }}" method="GET" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" style="width: 100%; max-width: 500px;margin: 0 auto;justify-content: center;">
                         <input type="text" name="search" class="form-control form-control-dark text-bg-white text-dark"
-                            placeholder="Введите имя или артикул" aria-label="Search" value="{{ request('search') }}"
-                            style="font-size:small">
+                            placeholder="Введите имя или артикул" aria-label="Search" value="{{ request('search') }}">
                     </form>
 
-                    <div class="text-end">
-                        <a href="{{ route('getItem') }}" class="btn btn-warning" style="width: 100px;margin-right: 5px;height:38px">Назад</a>
-                    </div>
+
                 </div>
                 <hr>
             </header>
@@ -208,7 +218,7 @@
                         @else
                         <div class="row">
                             @foreach($items as $item)
-                            <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 custom-col-5" >
+                            <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 mb-4 custom-col-5">
                                 <div class="card product-card">
                                     <a href="{{ route('productpage.show', ['id' => $item->id]) }}">
                                         <div id="carousel-{{ $item->id }}" class="carousel slide">

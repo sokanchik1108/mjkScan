@@ -37,12 +37,22 @@
 
           <div class="product-footer mt-auto">
             <p class="card-price">{{ number_format($item->sale_price, 0, '.', '.') }} ₸</p>
-            <p class="card-text">В наличии: {{ $item->quantity }}шт.</p>
+            <p class="card-text">
+              В наличии:
+              <span class="{{ $item->quantity == 0 ? 'text-danger' : '' }}">
+                {{ $item->quantity }}шт.
+              </span>
+            </p>
+
+            @if($item->quantity > 0)
             <form action="{{ route('cart.add', ['id' => $item->id]) }}" method="POST" class="d-flex gap-2 align-items-center">
               @csrf
               <button type="submit" class="btn btn-warning w-100">В корзину</button>
-              <input type="number" name="quantity" value="1" min="1" class="form-control" style="max-width: 60px;" required>
+              <input type="number" name="quantity" value="1" min="1" max="{{ $item->quantity }}" class="form-control" style="max-width: 60px;" required>
             </form>
+            @else
+            <button class="btn btn-secondary w-100" disabled>Нет в наличии</button>
+            @endif
           </div>
         </div>
       </div>

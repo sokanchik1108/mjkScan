@@ -144,6 +144,7 @@ class WebsiteController extends Controller
             'price' => (float)$item->sale_price,
             'quantity' => (int)$request->quantity,
             'image' => asset('storage/' . $firstImage),
+            'article' => $item->article,
         ];
 
         $cart[] = $product;

@@ -80,6 +80,12 @@ Route::post('/payment/process', [PaymentController::class, 'process'])->name('pa
 
 
 
+// Новый маршрут для удаления всех заказов
+Route::post('/orders/destroy-all', [PaymentController::class, 'destroyAll'])->name('orders.destroyAll');
+
+
+
+
 
 
 

@@ -255,7 +255,9 @@
                     <img src="{{ $cartitem['image'] }}" alt="{{ $cartitem['name'] }}">
 
                     <div class="cart-item-details">
-                        <strong>{{ $cartitem['name'] }}</strong>
+                        <strong>{{ $cartitem['name'] }}</strong><br>
+
+                        <h6>Артикул: <span style="color:  #007bff;">{{ $cartitem['article'] }}</span></h6>
                         <small>Цена: {{ number_format($cartitem['price'], 0, '.', '.') }}₸ × {{ $cartitem['quantity'] }} шт</small>
                         <small>Итого: {{ number_format($itemTotal, 0, '.', '.') }}₸</small>
                     </div>
