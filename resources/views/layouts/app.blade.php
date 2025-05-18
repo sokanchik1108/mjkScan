@@ -20,7 +20,9 @@
   </style>
 
 <body class="d-flex flex-column min-vh-100">
+  @if (!isset($hideLayoutBlock))
   @include('partials.navbar')
+  @endif
 
 @if (!isset($hideLayoutBlock))
       <div class="text-center bg-light border rounded p-3 mb-4" style="font-size: 14px; color: #555;">

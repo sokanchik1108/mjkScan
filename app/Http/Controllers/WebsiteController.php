@@ -123,41 +123,43 @@ class WebsiteController extends Controller
 
 
 
-    public function add(Request $request, $id)
-    {
-        $cart = session()->get('cart', []);
+public function add(Request $request, $id)
+{
+    $cart = session()->get('cart', []);
 
-        $item = Item::find($id);
+    $item = Item::find($id);
 
-        if (!$item) {
-            return redirect()->back()->with('error', 'Товар не найден!');
-        }
-
-        // Разделяем img_path и берём только первое изображение
-
-        $imgPaths = explode(',', $item->img_path);
-        $firstImage = trim($imgPaths[0] ?? '');
-
-        // Подготовка данных о товаре для корзины
-        $product = [
-            'name' => $item->product_name,
-            'price' => (float)$item->sale_price,
-            'quantity' => (int)$request->quantity,
-            'image' => asset('storage/' . $firstImage),
-            'article' => $item->article,
-        ];
-
-        $cart[] = $product;
-        session()->put('cart', $cart);
-
-        return redirect()->back()->with('success', 'Товар добавлен!')->with('item', [
-            'product_name' => $item->product_name,
-            'sale_price' => (float)$item->sale_price,
-            'article' => $item->article,
-            'img_path' => $firstImage,
-            'quantity' => (int)$request->quantity,
-        ]);
+    if (!$item) {
+        return redirect()->back()->with('error', 'Товар не найден!');
     }
+
+    // Разделяем img_path и берём только первое изображение
+    $imgPaths = explode(',', $item->img_path);
+    $firstImage = trim($imgPaths[0] ?? '');
+
+    // Подготовка данных о товаре для корзины
+    $product = [
+        'id' => $item->id, // <-- Добавляем id
+        'name' => $item->product_name,
+        'price' => (float)$item->sale_price,
+        'quantity' => (int)$request->quantity,
+        'image' => asset('storage/' . $firstImage),
+        'article' => $item->article,
+    ];
+
+    $cart[] = $product;
+    session()->put('cart', $cart);
+
+    return redirect()->back()->with('success', 'Товар добавлен!')->with('item', [
+        'id' => $item->id, // <-- Также можно передать в with()
+        'product_name' => $item->product_name,
+        'sale_price' => (float)$item->sale_price,
+        'article' => $item->article,
+        'img_path' => $firstImage,
+        'quantity' => (int)$request->quantity,
+    ]);
+}
+
 
 
     public function index()

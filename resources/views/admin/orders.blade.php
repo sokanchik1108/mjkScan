@@ -10,9 +10,19 @@
 @endif
 
 <h1>Список заказов</h1>
+<!-- Форма для поиска -->
+<div class="d-flex justify-content-center mb-2 mt-2">
+    <form action="{{ route('admin.orders') }}" method="GET" class="w-50">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Поиск по имени покупателя" value="{{ request('search') }}">
+            <button class="btn btn-primary" type="submit">Поиск</button>
+        </div>
+    </form>
+</div>
+
 
 <!-- Кнопка для удаления всех заказов -->
-<div class="d-flex justify-content-center mt-4">
+<div class="d-flex justify-content-center mt-1">
     <form action="{{ route('orders.destroyAll') }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить все заказы?');">
         @csrf
         <button type="submit" class="btn btn-danger">Удалить все заказы</button>
@@ -22,6 +32,7 @@
 
 <!-- Контейнер для таблицы с адаптивностью -->
 <div class="table-responsive">
+    <div class="container">
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -91,7 +102,7 @@
                     <form action="{{ route('orders.destroy', $payment->id) }}" method="POST" onsubmit="return confirm('Вы уверены, что хотите удалить этот заказ?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" style="        width: 70%;
+                        <button type="submit" class="btn btn-sm btn-danger" style="        width: 100%;
         font-size: 14px;">Удалить заказ</button>
                     </form>
                 </td>
@@ -99,6 +110,7 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 </div>
 
 <style>
@@ -128,7 +140,7 @@
 
     /* Таблица */
     .table {
-        width: 100%;
+        width: 80%;
         table-layout: auto;
         word-wrap: break-word;
         white-space: nowrap;
