@@ -148,7 +148,10 @@
 
 
 <!-- Выводим таблицу с товарами в корзине -->
-@if(session()->has('cart') && count(session('cart')) > 0)
+@if(!empty($cart) && count($cart) > 0)
+
+
+
 <table class="cart-table">
     <thead>
         <tr>
@@ -162,7 +165,7 @@
         @php
             $total = 0;
         @endphp
-        @foreach(session('cart') as $item)
+        @foreach($cart as $item)
         <tr>
             <td>
                 <img src="{{ $item['image'] }}" alt="{{ $item['name'] }}">

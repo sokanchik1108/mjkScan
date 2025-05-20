@@ -3,7 +3,7 @@
 @section('title', 'Информация про заказ онлайн')
 
 @section('content')
-@php($hideLayoutBlock = true)
+@php($hideInformationBlock = true)
 
 <div class="container mt-4">
     <div class="alert alert-info text-center" role="alert">

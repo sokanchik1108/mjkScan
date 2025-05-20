@@ -67,6 +67,8 @@ Route::get('/categories/{id}/types', [WebsiteController::class, 'getTypes']);
 // Для показа товаров определённого типа в категории
 Route::get('categories/{categoryId}/types/{typeId}', [WebsiteController::class, 'show'])->name('types.show');
 
+Route::get('/payment', [PaymentController::class, 'payment'])->name('payment');
+
 Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
 
 

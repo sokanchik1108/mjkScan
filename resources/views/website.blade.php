@@ -3,6 +3,13 @@
 @section('title', 'Веб-сайт')
 
 @section('content')
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    
   <div id="products-container">
     @include('partials.products')
   </div>

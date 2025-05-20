@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\Item;
 use App\Models\Type;
 use App\Models\Category;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Contracts\Support\ValidatedData;
 
 class WebsiteController extends Controller
@@ -123,10 +124,15 @@ class WebsiteController extends Controller
 
 
 
+
+
+
 public function add(Request $request, $id)
 {
-    $cart = session()->get('cart', []);
+    // Получаем текущую корзину из cookie
+    $cart = json_decode($request->cookie('cart', '[]'), true);
 
+    // Находим товар по ID
     $item = Item::find($id);
 
     if (!$item) {
@@ -137,9 +143,9 @@ public function add(Request $request, $id)
     $imgPaths = explode(',', $item->img_path);
     $firstImage = trim($imgPaths[0] ?? '');
 
-    // Подготовка данных о товаре для корзины
+    // Подготовка данных о товаре
     $product = [
-        'id' => $item->id, // <-- Добавляем id
+        'id' => $item->id,
         'name' => $item->product_name,
         'price' => (float)$item->sale_price,
         'quantity' => (int)$request->quantity,
@@ -147,49 +153,77 @@ public function add(Request $request, $id)
         'article' => $item->article,
     ];
 
+    // Добавляем товар в корзину
     $cart[] = $product;
-    session()->put('cart', $cart);
 
-    return redirect()->back()->with('success', 'Товар добавлен!')->with('item', [
-        'id' => $item->id, // <-- Также можно передать в with()
-        'product_name' => $item->product_name,
-        'sale_price' => (float)$item->sale_price,
-        'article' => $item->article,
-        'img_path' => $firstImage,
-        'quantity' => (int)$request->quantity,
-    ]);
+    // Пробуем сериализовать корзину
+    $jsonCart = json_encode($cart);
+
+    // Проверка размера cookie (в байтах)
+    if (strlen($jsonCart) > 4000) {
+        return redirect()->back()->with('error', 'Слишком много товаров в корзине. Удалите что-нибудь перед добавлением новых.');
+    }
+
+    // Сохраняем корзину в cookie на 14 дней
+    $cookie = Cookie::make('cart', $jsonCart, 60 * 24 * 14);
+
+    return redirect()->back()
+        ->withCookie($cookie)
+        ->with('success', 'Товар добавлен!')
+        ->with('item', [
+            'id' => $item->id,
+            'product_name' => $item->product_name,
+            'sale_price' => (float)$item->sale_price,
+            'article' => $item->article,
+            'img_path' => $firstImage,
+            'quantity' => (int)$request->quantity,
+        ]);
 }
 
 
 
-    public function index()
-    {
-        $cart = session()->get('cart', []);
+public function index(Request $request)
+{
+    // Получаем корзину из cookie
+    $cart = json_decode($request->cookie('cart', '[]'), true);
 
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
-        }
-
-        return view('basket', compact('cart'));
+    $total = 0;
+    foreach ($cart as $item) {
+        $total += $item['price'] * $item['quantity'];
     }
 
+    return view('basket', compact('cart', 'total'));
+}
 
-    public function remove(Request $request)
-    {
-        $cart = session()->get('cart', []);
-        unset($cart[$request->index]);
-        session()->put('cart', array_values($cart));
-        return redirect('/cart');
-    }
 
-    public function clear(Request $request)
-    {
-        // Очистить корзину
-        session()->forget('cart');
+public function remove(Request $request)
+{
+    // Получаем корзину из cookie
+    $cart = json_decode($request->cookie('cart', '[]'), true);
 
-        return redirect()->route('cart.index')->with('success', 'Корзина очищена');
-    }
+    // Удаляем товар по индексу
+    unset($cart[$request->index]);
+
+    // Сбрасываем индексы массива
+    $cart = array_values($cart);
+
+    // Обновляем cookie на 14 дней
+    $cookie = Cookie::make('cart', json_encode($cart), 60 * 24 * 14);
+
+    return redirect('/cart')->withCookie($cookie);
+}
+
+
+public function clear(Request $request)
+{
+    // Удаляем cookie с корзиной, установив пустое значение и срок -1 минуту
+    $cookie = Cookie::forget('cart');
+
+    return redirect()->route('cart.index')
+        ->withCookie($cookie)
+        ->with('success', 'Корзина очищена');
+}
+
 
 
 
